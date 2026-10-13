@@ -1,0 +1,67 @@
+// Prisma schema — PRD §7 (Prisma 7: connection URL lives in prisma.config.ts)
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+}
+
+model Post {
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  excerpt      String
+  content      String // Markdown
+  coverUrl     String?
+  coverAlt     String?
+  tags         String[]
+  status       PostStatus @default(DRAFT)
+  publishedAt  DateTime? // back-datable; set to now() on first publish if not provided
+  canonicalUrl String? // e.g. original dev.to URL
+  readingTime  Int        @default(1) // minutes, computed on save
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  imageUrl    String?
+  imageAlt    String?
+  tech        String[]
+  liveUrl     String?
+  repoUrl     String?
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// key/value JSON: one row per editable block (PRD §7 SiteContent JSON shapes)
+model SiteContent {
+  key       String   @id // hero | about | services | experience | techStack | contact | profile | socials | resumeUrl | footer | seo
+  value     Json
+  updatedAt DateTime @updatedAt
+}
