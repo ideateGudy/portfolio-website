@@ -20,7 +20,10 @@ type Params = { slug: string };
 /** Pre-render published slugs; new publishes arrive via on-demand revalidation. */
 export async function generateStaticParams(): Promise<Params[]> {
   const page = await getPosts(undefined, 1, 50);
-  return (page?.items ?? []).map((p) => ({ slug: p.slug }));
+  const params = (page?.items ?? []).map((p) => ({ slug: p.slug }));
+  // Cache Components requires at least one sample param for build validation.
+  // The normal page path resolves this sentinel with notFound().
+  return params.length > 0 ? params : [{ slug: '__static_validation__' }];
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {

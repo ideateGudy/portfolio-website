@@ -39,6 +39,6 @@ export async function POST(request: Request) {
     ? tags.filter((t): t is string => typeof t === 'string' && ALLOWED_TAGS.has(t))
     : [];
 
-  for (const tag of valid) revalidateTag(tag);
+  for (const tag of valid) revalidateTag(tag, { expire: 0 });
   return NextResponse.json({ revalidated: true, tags: valid });
 }

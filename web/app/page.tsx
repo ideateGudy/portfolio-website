@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Navbar } from '@/components/site/Navbar';
 import { Footer } from '@/components/site/Footer';
 import { Hero } from '@/components/site/Hero';
@@ -37,7 +38,21 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /** Portfolio home (PRD §5.1): all sections, API data with seed fallbacks. */
-export default async function Home() {
+export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <main id="main-content" className="mx-auto min-h-[60vh] max-w-6xl px-4 py-14 sm:px-6">
+          <p className="text-sm text-muted">Loading portfolio…</p>
+        </main>
+      }
+    >
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+async function HomeContent() {
   const [contentRaw, projects, latest] = await Promise.all([
     getContent(),
     getProjects(),
