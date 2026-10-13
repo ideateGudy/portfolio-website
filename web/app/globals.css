@@ -1,0 +1,376 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: .dark on <html> (DESIGN_SKILL §3) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------- Tokens --------------------------------- */
+:root {
+  --bg: #f6f8f7;
+  --surface: #ffffff;
+  --fg: #0b1411;
+  --muted: #55645d; /* AA on --bg */
+  --line: rgb(11 20 17 / 0.1);
+  --accent: #047857; /* emerald-700 */
+  --accent-fg: #ffffff;
+  --spark: #b45309; /* amber-700, used sparingly */
+  --scroll-thumb: rgb(11 20 17 / 0.25);
+  --glass-bg: rgb(255 255 255 / 0.65);
+  --glass-edge: rgb(255 255 255 / 0.8);
+  --shadow: 0 8px 30px rgb(11 20 17 / 0.08);
+}
+
+.dark {
+  --bg: #070c0a;
+  --surface: #0e1512;
+  --fg: #ecf3ef;
+  --muted: #93a59c;
+  --line: rgb(255 255 255 / 0.1);
+  --accent: #34d399; /* emerald-400 */
+  --accent-fg: #04120c;
+  --spark: #fbbf24;
+  --scroll-thumb: rgb(255 255 255 / 0.22);
+  --glass-bg: rgb(255 255 255 / 0.05);
+  --glass-edge: rgb(255 255 255 / 0.12);
+  --shadow: 0 8px 30px rgb(0 0 0 / 0.35);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-spark: var(--spark);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ---------------------------------- Base ----------------------------------- */
+html {
+  background: var(--bg);
+  color: var(--fg);
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Two static radial gradients so glass has something to blur (§6 rule 1). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      64rem 44rem at 12% -8%,
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      52rem 38rem at 88% 6%,
+      color-mix(in srgb, var(--spark) 6%, transparent),
+      transparent 60%
+    );
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -4rem;
+  left: 1rem;
+  z-index: 100;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: top 0.2s ease;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+/* ---------------------------------- Glass ---------------------------------- */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-edge);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    var(--shadow);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-radius: 1rem;
+}
+.navbar-shell {
+  width: 100%;
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--surface);
+  }
+}
+
+/* Desktop-only hover lift (§6 rule 2). */
+@media (hover: hover) {
+  .glass-hover {
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .glass-hover:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+}
+
+/* -------------------------------- Scrollbars (§9) --------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Chromium / Safari: slim pill thumb, transparent track */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+  background-clip: content-box;
+}
+
+/* Firefox only (Chromium ignores @supports -moz rules harmlessly) */
+@supports (-moz-appearance: none) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+}
+
+/* ---------------------------- Article prose (§8) --------------------------- */
+.prose-article {
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--fg);
+}
+
+.prose-article h2 {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  scroll-margin-top: 96px;
+}
+.prose-article h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  scroll-margin-top: 96px;
+}
+.prose-article p {
+  margin: 1.25rem 0;
+}
+.prose-article a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-article strong {
+  font-weight: 600;
+}
+.prose-article ul,
+.prose-article ol {
+  margin: 1.25rem 0;
+  padding-left: 1.5rem;
+}
+.prose-article ul {
+  list-style: disc;
+}
+.prose-article ol {
+  list-style: decimal;
+}
+.prose-article li {
+  margin: 0.4rem 0;
+}
+.prose-article li::marker {
+  color: color-mix(in srgb, var(--accent) 70%, var(--muted));
+}
+.prose-article blockquote {
+  margin: 1.5rem 0;
+  border-left: 3px solid var(--accent);
+  padding-left: 1.25rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.prose-article img {
+  margin: 2rem 0;
+  border-radius: 0.75rem;
+  height: auto;
+}
+.prose-article figure {
+  margin: 2rem 0;
+}
+.prose-article figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-align: center;
+}
+.prose-article hr {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Inline code */
+.prose-article :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.375rem;
+}
+
+/* Code blocks: dark panel in both themes, language label + copy button */
+.prose-article .codeblock {
+  position: relative;
+  margin: 2rem 0;
+}
+.prose-article .codeblock .codeblock-lang {
+  position: absolute;
+  top: 0.7rem;
+  left: 1rem;
+  z-index: 10;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #93a59c;
+  pointer-events: none;
+}
+.prose-article .codeblock pre {
+  margin: 0;
+  padding: 2.75rem 1.25rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #0b1210 !important;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  tab-size: 2;
+  color: #e6f0ea;
+}
+.prose-article pre code {
+  font-family: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+/* Tables */
+.prose-article .table-wrap,
+.prose-article table {
+  margin: 2rem 0;
+}
+.prose-article table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  overflow-x: auto;
+  display: block;
+}
+.prose-article th,
+.prose-article td {
+  border: 1px solid var(--line);
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+}
+.prose-article th {
+  background: color-mix(in srgb, var(--fg) 5%, transparent);
+  font-weight: 600;
+}
+
+/* --------------------------- Motion / animations --------------------------- */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.dialog-panel {
+  animation: dialog-in 0.18s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.toast-item {
+  animation: toast-in 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-panel,
+  .toast-item {
+    animation: none;
+  }
+  .glass-hover:hover {
+    transform: none;
+  }
+}
+
+/* --------------------------- Dashboard extras ------------------------------ */
+/* Compact scroll container used by tables & code blocks in panels */
+.scroll-x {
+  overflow-x: auto;
+}
