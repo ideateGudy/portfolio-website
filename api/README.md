@@ -122,3 +122,14 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Deploying the API on Render
+
+Create a Node web service with these settings:
+
+- **Root Directory:** `api`
+- **Build Command:** `pnpm install --frozen-lockfile --prod=false && pnpm run build`
+- **Start Command:** `pnpm run start:prod`
+- **Health Check Path:** `/health`
+
+The install step includes the Nest CLI, which is a build-time dependency. The build script generates the Prisma client before compiling the API. Configure `DATABASE_URL`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `WEB_URL` in the service environment. Add the Cloudinary variables to enable image uploads. Render provides `PORT` automatically.
