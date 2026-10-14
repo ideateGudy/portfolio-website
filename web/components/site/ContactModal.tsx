@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/Button';
 import { MailIcon, CheckIcon } from '@/components/ui/icons';
 import { useUIStore } from '@/store/ui';
 
-const DEFAULT_KEY = '621b32b2-2965-431c-8ecd-6776ddf4fa30';
 
 interface ContactModalProps {
   recipientEmail?: string;
@@ -41,9 +40,9 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
   }, [open, defaultSubject]);
 
   const accessKey =
-    process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || DEFAULT_KEY;
+    process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
       setErrorMessage('Please fill in your name, email, and message.');
@@ -111,7 +110,7 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
           </div>
           <h3 className="mt-4 text-lg font-semibold text-fg">Message Received!</h3>
           <p className="mt-2 text-sm text-muted">
-            Thank you for reaching out. I have received your message via Web3Forms and will review it and reply as soon as possible.
+            Thank you for reaching out. I have received your message. I`'`ll will review it and reply as soon as possible.
           </p>
           <div className="mt-6 flex gap-3">
             <Button
@@ -187,16 +186,15 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
             <p className="text-xs text-red-600 dark:text-red-400">{errorMessage}</p>
           )}
 
-          <div className="mt-2 flex items-center justify-between gap-3 border-t border-line pt-4">
-            <span className="text-[11px] text-muted">
-              Powered by Web3Forms · Direct to inbox
-            </span>
-            <div className="flex gap-2">
+          <div className="mt-2 flex flex-col-reverse gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
+
+            <div className="flex flex-col-reverse gap-2 sm:flex-row">
               <Button
                 type="button"
                 variant="ghost"
                 onClick={close}
                 disabled={status === 'submitting'}
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
@@ -204,7 +202,7 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
                 type="submit"
                 variant="primary"
                 disabled={status === 'submitting'}
-                className="gap-2"
+                className="w-full gap-2 sm:w-auto"
               >
                 <MailIcon size={16} />
                 {status === 'submitting' ? 'Sending…' : 'Send Message'}

@@ -51,10 +51,10 @@ export function Dialog({ open, onClose, title, description, children, footer, ma
         // Clicks on the backdrop hit the dialog element itself.
         if (e.target === ref.current) ref.current?.close();
       }}
-      className={`w-[calc(100vw-2rem)] ${maxWidth} rounded-2xl bg-transparent p-0 backdrop:bg-black/50`}
+      className={`fixed inset-0 m-auto mx-auto my-auto w-[calc(100vw-2rem)] sm:w-full ${maxWidth} max-h-[92dvh] overflow-y-auto rounded-2xl bg-transparent p-0 shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-xs`}
       aria-labelledby={`${title.replace(/\s+/g, "-").toLowerCase()}-dialog-title`}
     >
-      <div className="glass dialog-panel p-6">
+      <div className="glass dialog-panel max-h-[92dvh] overflow-y-auto p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2
