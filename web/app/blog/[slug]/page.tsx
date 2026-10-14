@@ -13,6 +13,7 @@ import { cld } from '@/lib/format';
 import { ArticleBody } from '@/lib/markdown';
 import { AuthorBadge } from '@/components/blog/AuthorBadge';
 import { ZoomableImage } from '@/components/blog/ZoomableImage';
+import ArticleLoading from './loading';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
@@ -60,13 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 /** Single article (PRD §5.3): tags → H1 → author meta → cover → 68ch body. */
 export default function ArticlePage({ params }: { params: Promise<Params> }) {
   return (
-    <Suspense
-      fallback={
-        <main className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-          <p className="text-muted">Loading article…</p>
-        </main>
-      }
-    >
+    <Suspense fallback={<ArticleLoading />}>
       <ArticleContent params={params} />
     </Suspense>
   );
