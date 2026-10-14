@@ -64,8 +64,23 @@ export default function ProjectsAdminPage() {
   }, []);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let active = true;
+    void adminApi.projects
+      .list()
+      .then((data) => {
+        if (active) setProjects(data);
+      })
+      .catch((e) => {
+        if (active) {
+          setError(e instanceof Error ? e.message : 'Failed to load projects');
+          setProjects([]);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
 
   function patch(p: Partial<Draft>) {
     setDraft((d) => ({ ...(d ?? empty), ...p }));

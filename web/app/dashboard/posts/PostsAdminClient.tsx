@@ -39,8 +39,23 @@ export default function PostsAdminClient() {
   }, []);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let active = true;
+    void adminApi.posts
+      .list()
+      .then((data) => {
+        if (active) setPosts(data);
+      })
+      .catch((e) => {
+        if (active) {
+          setError(e instanceof Error ? e.message : 'Failed to load posts');
+          setPosts([]);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
 
   function onDelete(post: AdminPost) {
     openConfirm({
