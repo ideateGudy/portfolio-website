@@ -10,7 +10,7 @@ import { parseContent } from '@/lib/content';
 export const instant = false;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-const PER_PAGE = 5;
+const PER_PAGE = 6;
 
 export async function generateMetadata(): Promise<Metadata> {
   const parsed = parseContent(await getContent());
