@@ -1,8 +1,8 @@
-import Image from 'next/image';
 import { Reveal } from '@/components/motion/Reveal';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Tag } from '@/components/ui/Tag';
 import { ArrowUpRightIcon } from '@/components/ui/icons';
+import { ZoomableImage } from '@/components/blog/ZoomableImage';
 import { cld } from '@/lib/format';
 import type { Project } from '@/lib/api';
 import type { ProjectsHeader } from '@/lib/content';
@@ -19,21 +19,18 @@ export function Projects({ header, projects }: { header: ProjectsHeader; project
       ) : (
         <ol className="mt-8 grid gap-6 md:grid-cols-2">
           {projects.map((p, i) => {
-            const cover = cld(p.imageUrl, 800);
+            const cover = cld(p.imageUrl, 1200);
             const num = String(i + 1).padStart(2, '0');
             return (
               <li key={p.id}>
                 <Reveal delay={Math.min(i * 0.06, 0.3)} className="h-full">
                   <article className="glass glass-hover flex h-full flex-col overflow-hidden">
                     {cover ? (
-                      <div className="relative aspect-[16/10] overflow-hidden">
-                        <Image
+                      <div className="relative aspect-[16/10] overflow-hidden bg-fg/5">
+                        <ZoomableImage
                           src={cover}
                           alt={p.imageAlt || `${p.title} preview`}
-                          fill
-                          sizes="(min-width: 768px) 50vw, 100vw"
-                          loading={i === 0 ? 'eager' : 'lazy'}
-                          className="object-cover transition-transform duration-200 hover:scale-[1.03]"
+                          className="h-full w-full object-cover"
                         />
                       </div>
                     ) : null}
@@ -71,3 +68,4 @@ export function Projects({ header, projects }: { header: ProjectsHeader; project
     </section>
   );
 }
+
