@@ -28,6 +28,11 @@ type UIState = {
 
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+
+  contactModalOpen: boolean;
+  contactModalSubject: string;
+  openContactModal: (subject?: string) => void;
+  closeContactModal: () => void;
 };
 
 let toastId = 0;
@@ -50,4 +55,9 @@ export const useUIStore = create<UIState>()((set, get) => ({
 
   sidebarOpen: false,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+
+  contactModalOpen: false,
+  contactModalSubject: '',
+  openContactModal: (subject = '') => set({ contactModalOpen: true, contactModalSubject: subject }),
+  closeContactModal: () => set({ contactModalOpen: false, contactModalSubject: '' }),
 }));

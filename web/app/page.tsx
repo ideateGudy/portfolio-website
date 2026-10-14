@@ -9,6 +9,7 @@ import { Services } from '@/components/site/Services';
 import { Experience } from '@/components/site/Experience';
 import { Writing } from '@/components/site/Writing';
 import { Contact } from '@/components/site/Contact';
+import { ContactModal } from '@/components/site/ContactModal';
 import { getContent, getLatestPosts, getProjects } from '@/lib/api';
 import { parseContent } from '@/lib/content';
 
@@ -91,6 +92,7 @@ async function HomeContent() {
         <Contact contact={c.contact} socials={c.socials} resumeUrl={c.resumeUrl} />
       </main>
       <Footer text={c.footerText} socials={c.socials} />
+      <ContactModal recipientEmail={c.contact.email} />
     </div>
   );
 }

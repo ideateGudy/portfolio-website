@@ -1,10 +1,15 @@
+'use client';
+
 import { Reveal } from '@/components/motion/Reveal';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { CheckIcon } from '@/components/ui/icons';
+import { useUIStore } from '@/store/ui';
 import type { ServicesContent } from '@/lib/content';
 
 /** Service cards with deliverables (design §7.5). */
 export function Services({ services }: { services: ServicesContent }) {
+  const openContactModal = useUIStore((s) => s.openContactModal);
+
   return (
     <section id="services" aria-label="Services" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
@@ -29,9 +34,13 @@ export function Services({ services }: { services: ServicesContent }) {
                     </li>
                   ))}
                 </ul>
-                <a href="#contact" className="mt-5 inline-flex items-center gap-1 border-t border-line pt-4 text-sm font-medium text-accent hover:underline">
+                <button
+                  type="button"
+                  onClick={() => openContactModal(s.title)}
+                  className="mt-5 inline-flex items-center gap-1 border-t border-line pt-4 text-sm font-medium text-accent hover:underline text-left cursor-pointer transition-colors"
+                >
                   Get in touch →
-                </a>
+                </button>
               </article>
             </Reveal>
           </li>
@@ -40,3 +49,4 @@ export function Services({ services }: { services: ServicesContent }) {
     </section>
   );
 }
+

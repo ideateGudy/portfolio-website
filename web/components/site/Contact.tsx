@@ -39,21 +39,28 @@ export function Contact({ contact, socials, resumeUrl }: Props) {
               </p>
             </div>
             <div className="flex flex-col gap-3">
-              <a
-                href={`mailto:${contact.email}`}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-5 font-medium text-accent-fg transition hover:brightness-[1.08]"
+              <button
+                type="button"
+                onClick={() => useUIStore.getState().openContactModal()}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-5 font-medium text-accent-fg transition hover:brightness-[1.08] cursor-pointer"
               >
                 <MailIcon size={18} />
-                {contact.email}
-              </a>
+                Send a Message
+              </button>
               <div className="flex flex-wrap gap-3">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-line px-4 text-xs sm:text-sm font-medium text-fg transition-colors hover:bg-fg/5"
+                >
+                  {contact.email}
+                </a>
                 <button
                   type="button"
                   onClick={copyEmail}
-                  className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line px-4 text-xs sm:text-sm font-medium text-fg transition-colors hover:bg-fg/5"
                 >
                   <CopyIcon size={16} />
-                  Copy email
+                  Copy
                 </button>
                 {resumeUrl ? (
                   <a
