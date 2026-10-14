@@ -114,6 +114,17 @@ export function ContentForm({
           />
         </div>
       );
+    case 'techStack':
+      return (
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-fg">Technologies</label>
+          <ChipsInput
+            value={Array.isArray(value.chips) ? (value.chips as string[]) : []}
+            onChange={(chips) => set({ chips })}
+            placeholder="Add a technology"
+          />
+        </div>
+      );
     case 'footer':
       return (
         <Input

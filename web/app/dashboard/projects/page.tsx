@@ -44,7 +44,6 @@ function toDraft(p: AdminProject): Draft {
   };
 }
 
-
 export default function ProjectsAdminPage() {
   const [projects, setProjects] = useState<AdminProject[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +79,6 @@ export default function ProjectsAdminPage() {
       active = false;
     };
   }, []);
-
 
   function patch(p: Partial<Draft>) {
     setDraft((d) => ({ ...(d ?? empty), ...p }));
@@ -164,7 +162,7 @@ export default function ProjectsAdminPage() {
       )}
 
       {draft && (
-        <div className="glass flex flex-col gap-4 p-5">
+        <div className="glass flex flex-col gap-4 p-5 sm:p-6">
           <h2 className="text-lg font-semibold text-fg">{draft.id ? 'Edit project' : 'New project'}</h2>
           <Input label="Title" value={draft.title} onChange={(e) => patch({ title: e.target.value })} />
           <Textarea
@@ -188,9 +186,20 @@ export default function ProjectsAdminPage() {
             onChange={(e) => patch({ tech: e.target.value })}
             placeholder="React, Node, AWS"
           />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Live URL" value={draft.liveUrl} onChange={(e) => patch({ liveUrl: e.target.value })} />
-            <Input label="Repo URL" value={draft.repoUrl} onChange={(e) => patch({ repoUrl: e.target.value })} />
+          {/* Stacks vertically on mobile, 2 columns on sm+ screens */}
+          <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2">
+            <Input
+              label="Live URL"
+              value={draft.liveUrl}
+              onChange={(e) => patch({ liveUrl: e.target.value })}
+              placeholder="https://..."
+            />
+            <Input
+              label="Repo URL"
+              value={draft.repoUrl}
+              onChange={(e) => patch({ repoUrl: e.target.value })}
+              placeholder="https://github.com/..."
+            />
           </div>
           <label className="flex items-center gap-2 text-sm text-fg">
             <input
@@ -201,9 +210,9 @@ export default function ProjectsAdminPage() {
             />
             Visible on the public site
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <Button disabled={busy} onClick={() => void onSave()}>
-              {busy ? 'Saving…' : 'Save'}
+              {busy ? 'Saving…' : 'Save project'}
             </Button>
             <Button variant="ghost" onClick={() => setDraft(null)}>
               Cancel
@@ -212,9 +221,15 @@ export default function ProjectsAdminPage() {
         </div>
       )}
 
-      <div className="glass divide-y divide-[var(--line)]">
+      <div className="glass divide-y divide-line">
         {projects === null ? (
-          <p className="px-4 py-8 text-center text-sm text-muted">Loading…</p>
+          <div className="flex flex-col items-center justify-center gap-2.5 py-12 text-sm text-muted">
+            <span className="relative flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-accent" />
+            </span>
+            <span>Loading projects…</span>
+          </div>
         ) : projects.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-muted">No projects yet.</p>
         ) : (
