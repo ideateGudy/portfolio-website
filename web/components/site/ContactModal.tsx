@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog } from '@/components/ui/Dialog';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -28,16 +28,19 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    if (open) {
-      setForm((prev) => ({
-        ...prev,
-        subject: defaultSubject ? `Project Inquiry: ${defaultSubject}` : prev.subject,
-      }));
-      setStatus('idle');
-      setErrorMessage('');
-    }
-  }, [open, defaultSubject]);
+  // Track previous open state to update form when dialog opens without triggering cascading setState in an effect
+  const [prevOpen, setPrevOpen] = useState(false);
+  if (open && !prevOpen) {
+    setPrevOpen(true);
+    setForm((prev) => ({
+      ...prev,
+      subject: defaultSubject ? `Project Inquiry: ${defaultSubject}` : prev.subject,
+    }));
+    setStatus('idle');
+    setErrorMessage('');
+  } else if (!open && prevOpen) {
+    setPrevOpen(false);
+  }
 
   const accessKey =
     process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
@@ -110,7 +113,7 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
           </div>
           <h3 className="mt-4 text-lg font-semibold text-fg">Message Received!</h3>
           <p className="mt-2 text-sm text-muted">
-            Thank you for reaching out. I have received your message. I`'`ll will review it and reply as soon as possible.
+            Thank you for reaching out. I have received your message and will review it and reply as soon as possible.
           </p>
           <div className="mt-6 flex gap-3">
             <Button
