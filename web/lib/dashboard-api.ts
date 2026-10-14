@@ -59,6 +59,13 @@ export type AdminProject = {
 };
 
 export const adminApi = {
+  auth: {
+    changePassword: (currentPassword: string, newPassword: string) =>
+      req<{ ok: boolean; message: string }>('/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({ currentPassword, newPassword }),
+      }),
+  },
   posts: {
     list: () => req<AdminPost[]>('/admin/posts'),
     get: (id: string) => req<AdminPost>(`/admin/posts/${id}`),

@@ -23,6 +23,14 @@ function SettingsClient() {
   const [linkedin, setLinkedin] = useState('');
   const [devto, setDevto] = useState('');
 
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+
   useEffect(() => {
     void adminApi.content.getAll().then((all) => {
       if (!all) return;
@@ -68,31 +76,51 @@ function SettingsClient() {
     }
   }
 
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    if (newPassword.length < 8) {
+      setPasswordError('New password must be at least 8 characters long');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+
+    setPasswordBusy(true);
+    try {
+      const res = await adminApi.auth.changePassword(currentPassword, newPassword);
+      setPasswordSuccess(res.message || 'Password changed successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      toast('Password updated');
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : 'Failed to change password');
+    } finally {
+      setPasswordBusy(false);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-fg">Settings</h1>
-        <p className="mt-1 text-sm text-muted">Profile, résumé link and social accounts.</p>
+        <p className="mt-1 text-sm text-muted">Profile, personal information, credentials, résumé link and social accounts.</p>
       </div>
+
       {error && (
         <p role="alert" className="rounded-xl border border-red-600/40 px-4 py-3 text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       )}
-      <section className="glass flex flex-col gap-4 p-5">
-        <h2 className="text-lg font-semibold text-fg">Résumé</h2>
-        <Input
-          label="Résumé URL (Google Drive/Docs)"
-          value={resumeUrl}
-          onChange={(e) => setResumeUrl(e.target.value)}
-          placeholder="https://drive.google.com/…"
-        />
-        <p className="-mt-2 text-xs text-muted">
-          Leave empty to hide the “View Resume” buttons across the site.
-        </p>
-      </section>
-      <section className="glass flex flex-col gap-4 p-5">
-        <h2 className="text-lg font-semibold text-fg">Profile</h2>
+
+      {/* Profile Section */}
+      <section className="glass flex flex-col gap-4 p-5 sm:p-6">
+        <h2 className="text-lg font-semibold text-fg">Personal Profile</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Display name" value={name} onChange={(e) => setName(e.target.value)} />
           <Input label="Role / title" value={role} onChange={(e) => setRole(e.target.value)} />
@@ -106,7 +134,76 @@ function SettingsClient() {
         <Textarea label="Short bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} />
         <Input label="Contact email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </section>
-      <section className="glass flex flex-col gap-4 p-5">
+
+      {/* Change Password Section */}
+      <section className="glass flex flex-col gap-4 p-5 sm:p-6">
+        <div>
+          <h2 className="text-lg font-semibold text-fg">Change Password</h2>
+          <p className="mt-0.5 text-xs text-muted">Update your admin login password securely.</p>
+        </div>
+
+        {passwordError && (
+          <p role="alert" className="rounded-xl border border-red-600/40 px-4 py-2.5 text-sm text-red-600 dark:text-red-400">
+            {passwordError}
+          </p>
+        )}
+        {passwordSuccess && (
+          <p role="status" className="rounded-xl border border-emerald-600/40 px-4 py-2.5 text-sm text-emerald-600 dark:text-emerald-400">
+            {passwordSuccess}
+          </p>
+        )}
+
+        <form onSubmit={handleChangePassword} className="flex flex-col gap-4">
+          <Input
+            label="Current Password"
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input
+              label="New Password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="At least 8 characters"
+              required
+            />
+            <Input
+              label="Confirm New Password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
+              required
+            />
+          </div>
+          <div>
+            <Button type="submit" disabled={passwordBusy || !currentPassword || !newPassword}>
+              {passwordBusy ? 'Updating password…' : 'Update password'}
+            </Button>
+          </div>
+        </form>
+      </section>
+
+      {/* Résumé Section */}
+      <section className="glass flex flex-col gap-4 p-5 sm:p-6">
+        <h2 className="text-lg font-semibold text-fg">Résumé</h2>
+        <Input
+          label="Résumé URL (Google Drive/Docs)"
+          value={resumeUrl}
+          onChange={(e) => setResumeUrl(e.target.value)}
+          placeholder="https://drive.google.com/…"
+        />
+        <p className="-mt-2 text-xs text-muted">
+          Leave empty to hide the “View Resume” buttons across the site.
+        </p>
+      </section>
+
+      {/* Socials Section */}
+      <section className="glass flex flex-col gap-4 p-5 sm:p-6">
         <h2 className="text-lg font-semibold text-fg">Social links</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="GitHub" value={github} onChange={(e) => setGithub(e.target.value)} />
@@ -115,6 +212,7 @@ function SettingsClient() {
           <Input label="dev.to" value={devto} onChange={(e) => setDevto(e.target.value)} />
         </div>
       </section>
+
       <div className="flex justify-end">
         <Button disabled={busy} onClick={() => void save()}>
           {busy ? 'Saving…' : 'Save settings'}
