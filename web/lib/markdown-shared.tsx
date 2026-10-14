@@ -34,6 +34,7 @@ export const sanitizeSchema = {
     td: ['align', 'colSpan', 'rowSpan', 'style'],
   },
   protocols: { href: ['http', 'https', 'mailto'] },
+  clobberPrefix: '',
 };
 
 type CodeProps = {

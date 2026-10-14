@@ -19,7 +19,7 @@ export async function ArticleBody({ markdown }: { markdown: string }) {
         rehypePlugins={[
           rehypeSlug,
           [rehypePrettyCode, { theme: 'github-dark', keepBackground: true }],
-          [rehypeSanitize, sanitizeSchema, { clobberPrefix: '' }],
+          [rehypeSanitize, sanitizeSchema],
         ]}
         components={markdownComponents}
       >

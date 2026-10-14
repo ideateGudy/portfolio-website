@@ -17,7 +17,7 @@ export function ArticleBody({ content }: { content: string }) {
     <div className="prose-article">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeSlug, [rehypeSanitize, sanitizeSchema, { clobberPrefix: '' }]]}
+        rehypePlugins={[rehypeSlug, [rehypeSanitize, sanitizeSchema]]}
         components={markdownComponents}
       >
         {content}
