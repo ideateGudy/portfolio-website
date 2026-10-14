@@ -386,6 +386,18 @@ body::before {
   animation: toast-in 0.2s ease-out;
 }
 
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dialog-panel,
   .toast-item {
