@@ -12,6 +12,7 @@ import { parseContent } from '@/lib/content';
 import { cld } from '@/lib/format';
 import { ArticleBody } from '@/lib/markdown';
 import { AuthorBadge } from '@/components/blog/AuthorBadge';
+import { ZoomableImage } from '@/components/blog/ZoomableImage';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
@@ -21,8 +22,6 @@ type Params = { slug: string };
 export async function generateStaticParams(): Promise<Params[]> {
   const page = await getPosts(undefined, 1, 50);
   const params = (page?.items ?? []).map((p) => ({ slug: p.slug }));
-  // Cache Components requires at least one sample param for build validation.
-  // The normal page path resolves this sentinel with notFound().
   return params.length > 0 ? params : [{ slug: '__static_validation__' }];
 }
 
@@ -134,7 +133,11 @@ async function ArticleContent({ params }: { params: Promise<Params> }) {
           </header>
           {cover ? (
             <figure className="mx-auto mt-8 max-w-4xl">
-              <Image src={cover} alt={post.coverAlt || `${post.title} cover`} width={1200} height={675} priority className="h-auto w-full rounded-2xl object-cover" />
+              <ZoomableImage
+                src={cover}
+                alt={post.coverAlt || `${post.title} cover`}
+                className="h-auto w-full rounded-2xl object-cover"
+              />
             </figure>
           ) : null}
           <div className="mx-auto mt-8 max-w-[68ch]">

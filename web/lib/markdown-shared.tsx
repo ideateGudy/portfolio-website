@@ -1,6 +1,7 @@
 import { Children, isValidElement, type ComponentType } from 'react';
 import type { Components } from 'react-markdown';
 import { CopyCodeButton } from '@/components/blog/CopyCodeButton';
+import { ZoomableImage } from '@/components/blog/ZoomableImage';
 import { cld } from '@/lib/format';
 
 /**
@@ -97,7 +98,7 @@ export const markdownComponents: Components = {
   img({ src, alt }) {
     const url = cld(typeof src === 'string' ? src : undefined, 1200);
     if (!url) return null;
-    return <img src={url} alt={alt ?? ''} loading="lazy" decoding="async" />;
+    return <ZoomableImage src={url} alt={alt ?? ''} className="rounded-xl" />;
   },
   table({ children }) {
     return (
