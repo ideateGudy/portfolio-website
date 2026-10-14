@@ -26,6 +26,15 @@ export const metadata: Metadata = {
   },
   description:
     "Portfolio of Goodnews Azonubi, Backend & DevOps Engineer specializing in scalable server architecture, resilient REST APIs, AWS cloud infrastructure, Docker, CI/CD, and fullstack modern web applications.",
+  icons: {
+    icon: [
+      { url: '/icon', sizes: '48x48', type: 'image/png' },
+    ],
+    shortcut: '/icon',
+    apple: [
+      { url: '/icon', sizes: '48x48', type: 'image/png' },
+    ],
+  },
 };
 
 // Reads the persisted theme synchronously before first paint to completely eliminate theme flashing
