@@ -35,7 +35,10 @@ export function Navbar({ name, resumeUrl }: { name: string; resumeUrl: string })
           <span className="leading-tight">
             <span className="block text-sm font-semibold text-fg">{name}</span>
             <span className="flex items-center gap-1.5 text-xs text-muted">
-              <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-spark" />
+              <span className="relative flex h-2 w-2 items-center justify-center">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 duration-1000" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
               open to remote roles
             </span>
           </span>
@@ -74,42 +77,47 @@ export function Navbar({ name, resumeUrl }: { name: string; resumeUrl: string })
           </button>
         </div>
       </nav>
-      <nav
+
+      {/* Smooth mobile drawer transition */}
+      <div
         id="mobile-primary-menu"
         aria-label="Mobile primary"
-        hidden={!menuOpen}
-        className="border-t border-line px-4 py-2 lg:hidden sm:px-6"
+        className={`grid transition-all duration-300 ease-in-out lg:hidden border-t border-line overflow-hidden ${
+          menuOpen ? 'grid-rows-[1fr] opacity-100 py-3 px-4 sm:px-6' : 'grid-rows-[0fr] opacity-0 py-0 px-4 sm:px-6 border-t-transparent pointer-events-none'
+        }`}
       >
-        <div className="mx-auto grid max-w-6xl gap-1">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
+        <div className="min-h-0 overflow-hidden">
+          <div className="mx-auto grid max-w-6xl gap-1">
+            {links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-fg/5 hover:text-fg"
+              >
+                {l.label}
+              </a>
+            ))}
+            <Link
+              href="/blog"
               onClick={() => setMenuOpen(false)}
               className="rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-fg/5 hover:text-fg"
             >
-              {l.label}
-            </a>
-          ))}
-          <Link
-            href="/blog"
-            onClick={() => setMenuOpen(false)}
-            className="rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-fg/5 hover:text-fg"
-          >
-            Blog
-          </Link>
-          {resumeUrl ? (
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-fg/5 hover:text-fg"
-            >
-              View Resume
-            </a>
-          ) : null}
+              Blog
+            </Link>
+            {resumeUrl ? (
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-fg/5 hover:text-fg"
+              >
+                View Resume
+              </a>
+            ) : null}
+          </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }
