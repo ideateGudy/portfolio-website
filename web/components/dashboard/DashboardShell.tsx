@@ -8,15 +8,27 @@ import { useAuthStore } from '@/store/auth';
 import { useUIStore } from '@/store/ui';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ConfirmDelete } from '@/components/ui/ConfirmDelete';
-import { MenuIcon, CloseIcon, LogoutIcon, SettingsIcon, CompassIcon, BookOpenIcon } from '@/components/ui/icons';
+import {
+  MenuIcon,
+  CloseIcon,
+  LogoutIcon,
+  SettingsIcon,
+  CompassIcon,
+  BookOpenIcon,
+  PostsIcon,
+  ProjectsIcon,
+  ContentIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@/components/ui/icons';
 import { adminApi } from '@/lib/dashboard-api';
 import { cld } from '@/lib/format';
 
 const NAV = [
-  { href: '/dashboard/posts', label: 'Posts' },
-  { href: '/dashboard/projects', label: 'Projects' },
-  { href: '/dashboard/content', label: 'Site content' },
-  { href: '/dashboard/settings', label: 'Settings' },
+  { href: '/dashboard/posts', label: 'Posts', icon: PostsIcon },
+  { href: '/dashboard/projects', label: 'Projects', icon: ProjectsIcon },
+  { href: '/dashboard/content', label: 'Site content', icon: ContentIcon },
+  { href: '/dashboard/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
 /**
@@ -35,6 +47,30 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
 
   const [profile, setProfile] = useState<{ name: string; role: string; avatarUrl: string } | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('dash_sidebar_collapsed');
+      if (saved !== null) {
+        setIsCollapsed(saved === 'true');
+      }
+    } catch {
+      // localStorage may fail in private mode
+    }
+  }, []);
+
+  const toggleCollapsed = () => {
+    setIsCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('dash_sidebar_collapsed', String(next));
+      } catch {
+        // no-op
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (status === 'idle') void fetchMe();
@@ -99,92 +135,183 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto flex w-full max-w-6xl gap-6 px-4 py-8 sm:px-6">
       {/* Sidebar (Desktop) */}
-      <aside className="hidden w-64 shrink-0 md:block">
+      <aside
+        className={`hidden shrink-0 transition-all duration-300 md:block ${
+          isCollapsed ? 'w-20' : 'w-64'
+        }`}
+      >
         <div className="glass sticky top-20 flex min-h-[calc(100vh-8rem)] flex-col justify-between p-3.5">
           <div className="flex flex-col gap-1">
-            <div className="flex items-center justify-between px-3 py-2">
-              <span className="text-xs font-semibold tracking-wider text-muted uppercase">Dashboard</span>
-              <ThemeToggle />
+            <div
+              className={`flex items-center px-2 py-2 ${
+                isCollapsed ? 'justify-center' : 'justify-between'
+              }`}
+            >
+              {!isCollapsed && (
+                <span className="text-xs font-semibold tracking-wider text-muted uppercase">
+                  Dashboard
+                </span>
+              )}
+              <div className="flex items-center gap-1">
+                {!isCollapsed && <ThemeToggle />}
+                <button
+                  type="button"
+                  onClick={toggleCollapsed}
+                  title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                  aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-fg/5 hover:text-fg"
+                >
+                  {isCollapsed ? <ChevronRightIcon size={16} /> : <ChevronLeftIcon size={16} />}
+                </button>
+              </div>
             </div>
 
+            {isCollapsed && (
+              <div className="flex justify-center py-1">
+                <ThemeToggle />
+              </div>
+            )}
+
             <nav className="mt-2 flex flex-col gap-1">
-              {NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
-                    pathname.startsWith(item.href)
-                      ? 'bg-accent/10 text-accent font-semibold'
-                      : 'text-muted hover:bg-fg/5 hover:text-fg'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {NAV.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    title={isCollapsed ? item.label : undefined}
+                    className={`flex items-center gap-3 rounded-xl py-2 text-sm font-medium transition-colors ${
+                      isCollapsed ? 'justify-center px-2' : 'px-3'
+                    } ${
+                      isActive
+                        ? 'bg-accent/10 text-accent font-semibold'
+                        : 'text-muted hover:bg-fg/5 hover:text-fg'
+                    }`}
+                  >
+                    <Icon size={18} className="shrink-0" />
+                    {!isCollapsed && <span className="truncate">{item.label}</span>}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
           {/* Bottom Sidebar Sections */}
           <div className="flex flex-col gap-3 border-t border-line pt-3">
             {/* Quick Public Links */}
-            <div className="flex flex-col gap-0.5 px-1">
-              <span className="text-[10px] font-semibold tracking-wider text-muted uppercase">Public Links</span>
-              <div className="flex items-center gap-2 pt-1 text-xs text-muted">
+            {!isCollapsed ? (
+              <div className="flex flex-col gap-0.5 px-1">
+                <span className="text-[10px] font-semibold tracking-wider text-muted uppercase">
+                  Public Links
+                </span>
+                <div className="flex items-center gap-2 pt-1 text-xs text-muted">
+                  <Link
+                    href="/"
+                    className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/5 hover:text-fg"
+                  >
+                    <CompassIcon size={14} /> Portfolio
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/5 hover:text-fg"
+                  >
+                    <BookOpenIcon size={14} /> Blog
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-1">
                 <Link
                   href="/"
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/5 hover:text-fg"
+                  title="View Portfolio"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-fg/5 hover:text-fg"
                 >
-                  <CompassIcon size={14} /> Portfolio
+                  <CompassIcon size={16} />
                 </Link>
                 <Link
                   href="/blog"
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/5 hover:text-fg"
+                  title="View Blog"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-fg/5 hover:text-fg"
                 >
-                  <BookOpenIcon size={14} /> Blog
+                  <BookOpenIcon size={16} />
                 </Link>
               </div>
-            </div>
+            )}
 
             {/* Profile info & Settings direct link */}
-            <div className="flex items-center justify-between rounded-xl bg-fg/5 p-2.5">
-              <Link
-                href="/dashboard/settings"
-                title="Edit profile & change password"
-                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg transition-opacity hover:opacity-85"
-              >
-                {avatar ? (
-                  <Image
-                    src={avatar}
-                    alt="Admin Avatar"
-                    width={34}
-                    height={34}
-                    className="h-8.5 w-8.5 rounded-full object-cover"
-                  />
-                ) : (
-                  <span className="grid h-8.5 w-8.5 shrink-0 place-items-center rounded-full bg-accent font-mono text-xs font-bold text-accent-fg">
-                    {initials}
-                  </span>
-                )}
-                <div className="min-w-0 flex-1 leading-tight">
-                  <p className="truncate text-xs font-semibold text-fg">
-                    {profile?.name || user?.email}
-                  </p>
-                  <p className="flex items-center gap-1 text-[11px] text-muted">
-                    <SettingsIcon size={11} /> Settings
-                  </p>
-                </div>
-              </Link>
+            {!isCollapsed ? (
+              <div className="flex items-center justify-between rounded-xl bg-fg/5 p-2.5">
+                <Link
+                  href="/dashboard/settings"
+                  title="Edit profile & change password"
+                  className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg transition-opacity hover:opacity-85"
+                >
+                  {avatar ? (
+                    <Image
+                      src={avatar}
+                      alt="Admin Avatar"
+                      width={34}
+                      height={34}
+                      className="h-8.5 w-8.5 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="grid h-8.5 w-8.5 shrink-0 place-items-center rounded-full bg-accent font-mono text-xs font-bold text-accent-fg">
+                      {initials}
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1 leading-tight">
+                    <p className="truncate text-xs font-semibold text-fg">
+                      {profile?.name || user?.email}
+                    </p>
+                    <p className="flex items-center gap-1 text-[11px] text-muted">
+                      <SettingsIcon size={11} /> Settings
+                    </p>
+                  </div>
+                </Link>
 
-              <button
-                type="button"
-                onClick={handleLogout}
-                title="Log out"
-                aria-label="Log out"
-                className="grid h-8.5 w-8.5 place-items-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
-              >
-                <LogoutIcon size={16} />
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  title="Log out"
+                  aria-label="Log out"
+                  className="grid h-8.5 w-8.5 place-items-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
+                >
+                  <LogoutIcon size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2 rounded-xl bg-fg/5 py-2.5">
+                <Link
+                  href="/dashboard/settings"
+                  title={`${profile?.name || user?.email} - Settings`}
+                  className="transition-transform hover:scale-105"
+                >
+                  {avatar ? (
+                    <Image
+                      src={avatar}
+                      alt="Admin Avatar"
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent font-mono text-xs font-bold text-accent-fg">
+                      {initials}
+                    </span>
+                  )}
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  title="Log out"
+                  aria-label="Log out"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
+                >
+                  <LogoutIcon size={16} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </aside>
@@ -237,19 +364,24 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                   </button>
                 </div>
                 <nav className="flex flex-col gap-1.5">
-                  {NAV.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`rounded-xl px-3 py-2.5 text-sm font-medium ${
-                        pathname.startsWith(item.href)
-                          ? 'bg-accent/10 text-accent font-semibold'
-                          : 'text-muted hover:bg-fg/5 hover:text-fg'
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {NAV.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
+                          isActive
+                            ? 'bg-accent/10 text-accent font-semibold'
+                            : 'text-muted hover:bg-fg/5 hover:text-fg'
+                        }`}
+                      >
+                        <Icon size={18} className="shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
                 </nav>
               </div>
 
