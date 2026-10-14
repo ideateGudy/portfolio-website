@@ -129,12 +129,23 @@ export const fallbackExperience: ExperienceContent = {
   subtitle: 'Where I have been making an impact.',
   items: [
     {
+      role: 'Backend Engineer',
+      company: 'Dive Africa',
+      duration: 'Feb 2025 - May 2025',
+      location: 'Remote',
+      employmentType: 'Internship',
+      description:
+        '• Built secure REST APIs with OTP authentication, refresh tokens, and email verification, improving user onboarding reliability and reducing unauthorized access attempts. • Integrated Winston and Morgan for structured logging and HTTP request monitoring, enhancing debugging efficiency and reducing issue resolution time. • Documented all API endpoints using Swagger, streamlining team collaboration and cutting integration time for frontend developers. • Implemented role-based access control (RBAC), ensuring secure and efficient resource management across the platform. • Added rate limiting to sensitive endpoints using middleware, protecting the application from abuse and reducing bot-related traffic.',
+      skills: ['Node.js', 'Express', 'JWT/OTP Security', 'RBAC', 'Swagger', 'Winston', 'Rate Limiting'],
+    },
+    {
       role: 'Instructor',
       company: 'Ann Notch Digital Academy',
       duration: '2024 - Present',
       location: 'Remote',
       employmentType: 'Contract',
-      description: 'Teach students practical software development and cloud computing concepts, including AWS, Docker containerization, and modern JavaScript/TypeScript, helping learners build hands-on technical skills.',
+      description:
+        '• Teach students practical software development and cloud computing concepts including AWS, Docker containerization, and modern JavaScript/TypeScript. • Guide learners in building hands-on technical projects and adopting clean architecture principles.',
       skills: ['AWS', 'Cloud Computing', 'Docker', 'TypeScript', 'Node.js'],
     },
     {
@@ -143,26 +154,29 @@ export const fallbackExperience: ExperienceContent = {
       duration: '2023 - 2024',
       location: 'Remote',
       employmentType: 'Full-time',
-      description: 'Developed and maintained robust backend services using C# and LINQ, designing optimized database schemas and building high-performance internal microservices.',
+      description:
+        '• Developed and maintained robust backend services using C# and LINQ. • Designed optimized database schemas and built high-performance internal microservices.',
       skills: ['C#', '.NET', 'LINQ', 'REST APIs', 'SQL Database Design'],
     },
     {
-      role: 'Backend Engineer',
-      company: 'Dive Africa',
-      duration: '2022 - 2023',
-      location: 'Remote',
-      employmentType: 'Full-time',
-      description: 'Built secure REST APIs with Node.js, implementing OTP authentication, refresh tokens, email verification, RBAC, rate limiting, structured logging, and comprehensive Swagger/OpenAPI documentation.',
-      skills: ['Node.js', 'Express', 'JWT/OTP Security', 'RBAC', 'Swagger', 'Redis'],
+      role: 'Frontend Instructor',
+      company: 'Coriftech Solutions',
+      duration: 'Jun 2023 - Oct 2023',
+      location: 'On-site',
+      employmentType: 'Contract',
+      description:
+        '• Instructed students in core web technologies, modern responsive design, and frontend development fundamentals. • Mentored students through practical lab exercises, project reviews, and frontend best practices.',
+      skills: ['HTML', 'CSS', 'Bootstrap'],
     },
     {
       role: 'Frontend Developer',
       company: 'Coriftech Solutions',
-      duration: '2021 - 2022',
-      location: 'On-site / Hybrid',
+      duration: 'May 2023 - Nov 2023',
+      location: 'On-site',
       employmentType: 'Full-time',
-      description: 'Developed responsive, high-performance web interfaces using modern frontend technologies, collaborating closely with backend engineers and UI/UX designers on production client deliverables.',
-      skills: ['React', 'Next.js', 'JavaScript', 'HTML5/CSS3', 'Responsive UI'],
+      description:
+        '• Built dynamic, responsive user interfaces and client-side applications. • Collaborated with the engineering team to implement clean JavaScript/TypeScript modules and integrated with RESTful backends.',
+      skills: ['Javascript', 'Typescript', 'Express.js', 'React'],
     },
   ],
 };
