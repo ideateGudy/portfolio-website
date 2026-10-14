@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminApi, type AdminPost } from '@/lib/dashboard-api';
 import { useEditorStore, type PostDraft } from '@/store/editor';
@@ -70,8 +70,8 @@ export function PostEditor({ post }: { post?: AdminPost }) {
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [slugTouched, setSlugTouched] = useState(false);
-  const [backdate, setBackdate] = useState(false);
+  const [slugTouched, setSlugTouched] = useState(() => !!post);
+  const [backdate, setBackdate] = useState(() => !!post?.publishedAt);
   const loadedRef = useRef(false);
 
   useEffect(() => {
@@ -79,8 +79,6 @@ export function PostEditor({ post }: { post?: AdminPost }) {
     loadedRef.current = true;
     if (post) {
       resetDraft(toDraft(post));
-      setSlugTouched(true);
-      setBackdate(!!post.publishedAt);
     }
   }, [post, resetDraft]);
 
@@ -94,7 +92,7 @@ export function PostEditor({ post }: { post?: AdminPost }) {
     [draft.tags],
   );
 
-  function applyEdit(before: string, after = '', placeholder = 'text') {
+  const applyEdit = useCallback((before: string, after = '', placeholder = 'text') => {
     const ta = taRef.current;
     if (!ta) return;
     const { value, caret } = wrap(ta, before, after, placeholder);
@@ -103,7 +101,8 @@ export function PostEditor({ post }: { post?: AdminPost }) {
       ta.focus();
       ta.setSelectionRange(caret, caret);
     });
-  }
+  }, [setDraft]);
+
 
   // Insert an inline image at the cursor: paste a URL, or upload to Cloudinary.
   const inlineFileRef = useRef<HTMLInputElement>(null);
@@ -172,18 +171,54 @@ export function PostEditor({ post }: { post?: AdminPost }) {
     }
   }
 
-  const toolbar: { label: string; title: string; run: () => void }[] = [
-    { label: 'B', title: 'Bold', run: () => applyEdit('**', '**', 'bold') },
-    { label: 'I', title: 'Italic', run: () => applyEdit('_', '_', 'italic') },
-    { label: 'H2', title: 'Heading 2', run: () => applyEdit('\n## ', '\n', 'Heading') },
-    { label: 'H3', title: 'Heading 3', run: () => applyEdit('\n### ', '\n', 'Heading') },
-    { label: 'Link', title: 'Link', run: () => applyEdit('[', '](https://)', 'label') },
-    { label: 'Quote', title: 'Quote', run: () => applyEdit('\n> ', '\n', 'quote') },
-    { label: '• List', title: 'Bullet list', run: () => applyEdit('\n- ', '\n', 'item') },
-    { label: '1. List', title: 'Numbered list', run: () => applyEdit('\n1. ', '\n', 'item') },
-    { label: '`code`', title: 'Inline code', run: () => applyEdit('`', '`', 'code') },
-    { label: '{}', title: 'Code block', run: () => applyEdit('\n```ts\n', '\n```\n', '// code') },
-  ];
+  const TOOLBAR_ACTIONS = [
+    { label: 'B', title: 'Bold', action: 'bold' },
+    { label: 'I', title: 'Italic', action: 'italic' },
+    { label: 'H2', title: 'Heading 2', action: 'h2' },
+    { label: 'H3', title: 'Heading 3', action: 'h3' },
+    { label: 'Link', title: 'Link', action: 'link' },
+    { label: 'Quote', title: 'Quote', action: 'quote' },
+    { label: '• List', title: 'Bullet list', action: 'ul' },
+    { label: '1. List', title: 'Numbered list', action: 'ol' },
+    { label: '`code`', title: 'Inline code', action: 'code' },
+    { label: '{}', title: 'Code block', action: 'codeblock' },
+  ] as const;
+
+  const handleToolbar = (action: (typeof TOOLBAR_ACTIONS)[number]['action']) => {
+    switch (action) {
+      case 'bold':
+        applyEdit('**', '**', 'bold');
+        break;
+      case 'italic':
+        applyEdit('_', '_', 'italic');
+        break;
+      case 'h2':
+        applyEdit('\n## ', '\n', 'Heading');
+        break;
+      case 'h3':
+        applyEdit('\n### ', '\n', 'Heading');
+        break;
+      case 'link':
+        applyEdit('[', '](https://)', 'label');
+        break;
+      case 'quote':
+        applyEdit('\n> ', '\n', 'quote');
+        break;
+      case 'ul':
+        applyEdit('\n- ', '\n', 'item');
+        break;
+      case 'ol':
+        applyEdit('\n1. ', '\n', 'item');
+        break;
+      case 'code':
+        applyEdit('`', '`', 'code');
+        break;
+      case 'codeblock':
+        applyEdit('\n```ts\n', '\n```\n', '// code');
+        break;
+    }
+  };
+
 
   return (
     <form
@@ -287,12 +322,12 @@ export function PostEditor({ post }: { post?: AdminPost }) {
         {tab === 'write' ? (
           <>
             <div className="flex flex-wrap gap-1">
-              {toolbar.map((b) => (
+              {TOOLBAR_ACTIONS.map((b) => (
                 <button
                   key={b.title}
                   type="button"
                   title={b.title}
-                  onClick={b.run}
+                  onClick={() => handleToolbar(b.action)}
                   className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-fg/5 hover:text-fg"
                 >
                   {b.label}
