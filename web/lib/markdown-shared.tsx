@@ -88,25 +88,11 @@ export const markdownComponents: Components = {
     return <figure {...rest}>{children}</figure>;
   },
   a({ href, children, ...rest }) {
-    const isHash = typeof href === 'string' && href.startsWith('#');
-    const external = !isHash && !!href && /^(https?:|mailto:)/.test(href);
+    const external = !!href && /^(https?:|mailto:)/.test(href);
     return (
       <a
         href={href}
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        {...(isHash
-          ? {
-              onClick: (e) => {
-                const targetId = href.slice(1);
-                const elem = document.getElementById(targetId);
-                if (elem) {
-                  e.preventDefault();
-                  elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  history.pushState(null, '', href);
-                }
-              },
-            }
-          : {})}
         {...rest}
       >
         {children}
