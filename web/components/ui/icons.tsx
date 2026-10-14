@@ -214,3 +214,31 @@ export function ChevronRightIcon({ className, size }: Props) {
     </svg>
   );
 }
+
+export function ServerIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
+      <rect width="20" height="8" x="2" y="14" rx="2" ry="2" />
+      <line x1="6" x2="6.01" y1="6" y2="6" />
+      <line x1="6" x2="6.01" y1="18" y2="18" />
+    </svg>
+  );
+}
+
+export function CloudIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+    </svg>
+  );
+}
+
+export function CodeIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+}

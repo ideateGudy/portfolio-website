@@ -102,8 +102,8 @@ export function ContactModal({ recipientEmail = 'azonubigoodnews@gmail.com' }: C
     <Dialog
       open={open}
       onClose={close}
-      title="Get in touch"
-      description="Have a project in mind, need backend & DevOps expertise, or want to discuss fullstack architecture? Send me a message below."
+      title={defaultSubject ? `Get in touch · ${defaultSubject}` : 'Get in touch'}
+      description="Send me a message below and I will get back to you shortly."
       maxWidth="max-w-lg"
     >
       {status === 'success' ? (

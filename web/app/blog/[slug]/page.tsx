@@ -111,67 +111,74 @@ async function ArticleContent({ params }: { params: Promise<Params> }) {
       <ReadingProgress />
       <BlogNavbar />
       <main id="main-content" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <article>
-          <header className="mx-auto max-w-[68ch]">
-            {post.tags.length > 0 ? (
-              <ul aria-label="Tags" className="flex flex-wrap gap-2">
-                {post.tags.map((t) => (
-                  <li key={t}>
-                    <Link href={`/blog?tag=${encodeURIComponent(t)}`} aria-label={`Posts tagged ${t}`}>
-                      <Tag className="transition-colors hover:border-accent hover:text-fg">{t}</Tag>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-balance text-fg sm:text-4xl md:text-[2.75rem] md:leading-[1.15]">
-              {post.title}
-            </h1>
-            <div className="mt-6 border-y border-line py-4">
-              <AuthorBadge profile={c.profile} publishedAt={post.publishedAt ?? undefined} readingTime={post.readingTime} />
-            </div>
-          </header>
+        <article className="glass mx-auto max-w-4xl overflow-hidden rounded-2xl border border-line">
           {cover ? (
-            <figure className="mx-auto mt-8 max-w-4xl">
+            <figure className="w-full overflow-hidden bg-fg/5">
               <ZoomableImage
                 src={cover}
                 alt={post.coverAlt || `${post.title} cover`}
-                className="h-auto w-full rounded-2xl object-cover"
+                className="max-h-115 w-full object-cover"
               />
             </figure>
           ) : null}
-          <div className="mx-auto mt-8 max-w-[68ch]">
-            <Suspense fallback={null}>
-              <ArticleBody markdown={post.content} />
-            </Suspense>
-          </div>
-          <footer className="mx-auto mt-12 max-w-[68ch]">
-            {post.canonicalUrl ? (
-              <p className="text-sm text-muted">
-                Originally published on{' '}
-                <a href={post.canonicalUrl} target="_blank" rel="noopener noreferrer canonical" className="text-accent underline underline-offset-4 hover:brightness-110">
-                  dev.to ↗
-                </a>
-              </p>
-            ) : null}
-            <div className="glass mt-6 flex items-center gap-4 p-5">
-              {avatar ? (
-                <Image src={avatar} alt={`${c.profile.name} profile photo`} width={64} height={64} loading="lazy" className="h-16 w-16 shrink-0 rounded-full object-cover" />
-              ) : (
-                <span aria-hidden className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-accent font-mono text-lg font-bold text-accent-fg">
-                  {initials}
-                </span>
-              )}
-              <div>
-                <p className="font-semibold text-fg">{c.profile.name}</p>
-                <p className="text-sm text-muted">{c.profile.role}</p>
-                {c.profile.bio ? <p className="mt-1 text-sm text-muted">{c.profile.bio}</p> : null}
+
+          <div className="p-6 sm:p-10 md:p-12">
+            <header className="mx-auto max-w-[68ch]">
+              <div className="mb-4">
+                <AuthorBadge profile={c.profile} publishedAt={post.publishedAt ?? undefined} readingTime={post.readingTime} />
               </div>
+
+              <h1 className="text-3xl font-bold tracking-tight text-balance text-fg sm:text-4xl md:text-[2.75rem] md:leading-[1.18]">
+                {post.title}
+              </h1>
+
+              {post.tags.length > 0 ? (
+                <ul aria-label="Tags" className="mt-4 flex flex-wrap gap-2">
+                  {post.tags.map((t) => (
+                    <li key={t}>
+                      <Link href={`/blog?tag=${encodeURIComponent(t)}`} aria-label={`Posts tagged ${t}`}>
+                        <Tag className="transition-colors hover:border-accent hover:text-fg">{t}</Tag>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </header>
+
+            <div className="mx-auto mt-10 max-w-[68ch] border-t border-line pt-8">
+              <Suspense fallback={null}>
+                <ArticleBody markdown={post.content} />
+              </Suspense>
             </div>
-            <Link href="/blog" className="mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">
-              ← All articles
-            </Link>
-          </footer>
+
+            <footer className="mx-auto mt-12 max-w-[68ch] border-t border-line pt-8">
+              {post.canonicalUrl ? (
+                <p className="text-sm text-muted">
+                  Originally published on{' '}
+                  <a href={post.canonicalUrl} target="_blank" rel="noopener noreferrer canonical" className="text-accent underline underline-offset-4 hover:brightness-110">
+                    dev.to ↗
+                  </a>
+                </p>
+              ) : null}
+              <div className="glass mt-6 flex items-center gap-4 p-5">
+                {avatar ? (
+                  <Image src={avatar} alt={`${c.profile.name} profile photo`} width={64} height={64} loading="lazy" className="h-16 w-16 shrink-0 rounded-full object-cover" />
+                ) : (
+                  <span aria-hidden className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-accent font-mono text-lg font-bold text-accent-fg">
+                    {initials}
+                  </span>
+                )}
+                <div>
+                  <p className="font-semibold text-fg">{c.profile.name}</p>
+                  <p className="text-sm text-muted">{c.profile.role}</p>
+                  {c.profile.bio ? <p className="mt-1 text-sm text-muted">{c.profile.bio}</p> : null}
+                </div>
+              </div>
+              <Link href="/blog" className="mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">
+                ← All articles
+              </Link>
+            </footer>
+          </div>
         </article>
       </main>
       <BlogFooter text={c.footerText} socials={c.socials} />
