@@ -10,7 +10,7 @@ import { parseContent } from '@/lib/content';
 export const instant = false;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-const PER_PAGE = 9;
+const PER_PAGE = 10;
 
 export async function generateMetadata(): Promise<Metadata> {
   const parsed = parseContent(await getContent());
@@ -109,18 +109,44 @@ export default async function BlogList({ searchParams }: { searchParams: Promise
               ))}
             </ol>
             {totalPages > 1 ? (
-              <nav aria-label="Pagination" className="mt-12 flex items-center justify-center gap-2">
+              <nav aria-label="Pagination" className="mt-12 flex flex-wrap items-center justify-center gap-2">
                 {page > 1 ? (
-                  <Link href={pageHref(page - 1)} className="inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">
-                    ← Newer
+                  <Link
+                    href={pageHref(page - 1)}
+                    className="inline-flex h-10 items-center rounded-full border border-line px-4 text-sm font-medium text-fg transition-colors hover:bg-fg/5"
+                    aria-label="Previous page"
+                  >
+                    ← Prev
                   </Link>
                 ) : null}
-                <span className="px-2 font-mono text-sm text-muted" aria-current="page">
-                  {page} / {totalPages}
-                </span>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((p) => {
+                    const isCurrent = p === page;
+                    return (
+                      <Link
+                        key={p}
+                        href={pageHref(p)}
+                        aria-current={isCurrent ? 'page' : undefined}
+                        className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-mono transition-colors ${
+                          isCurrent
+                            ? 'bg-accent text-accent-fg font-semibold shadow-xs'
+                            : 'border border-line text-muted hover:border-fg/30 hover:text-fg'
+                        }`}
+                      >
+                        {p}
+                      </Link>
+                    );
+                  })}
+                </div>
+
                 {page < totalPages ? (
-                  <Link href={pageHref(page + 1)} className="inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">
-                    Older →
+                  <Link
+                    href={pageHref(page + 1)}
+                    className="inline-flex h-10 items-center rounded-full border border-line px-4 text-sm font-medium text-fg transition-colors hover:bg-fg/5"
+                    aria-label="Next page"
+                  >
+                    Next →
                   </Link>
                 ) : null}
               </nav>
