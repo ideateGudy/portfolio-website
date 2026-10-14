@@ -5,7 +5,7 @@ import { adminApi } from '@/lib/dashboard-api';
 import { useUIStore } from '@/store/ui';
 import { Button } from '@/components/ui/Button';
 
-const FOLDERS = ['portfolio/posts', 'portfolio/projects', 'portfolio/profile'] as const;
+export type UploadFolder = 'portfolio/posts' | 'portfolio/projects' | 'portfolio/profile';
 
 /**
  * Cloudinary image uploader (PRD §5.4): picks a file, uploads through the API,
@@ -19,7 +19,7 @@ export function ImageUploader({
 }: {
   value: string;
   onUploaded: (url: string) => void;
-  folder?: (typeof FOLDERS)[number];
+  folder?: UploadFolder;
   label?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);

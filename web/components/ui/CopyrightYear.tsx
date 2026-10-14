@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const subscribe = () => () => {};
 
 /**
- * Current year for the copyright line, as a client island so the static
- * prerender never calls `new Date()` (Next.js "blocking prerender" guard).
- * Server and first client render both emit an empty span → no hydration
- * mismatch; the year fills in right after mount.
+ * Current year for the copyright line. Server emits null/empty,
+ * then on client it syncs to the current year with zero hydration mismatch.
  */
 export function CopyrightYear() {
-  const [year, setYear] = useState<number | null>(null);
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
+  const year = useSyncExternalStore(
+    subscribe,
+    () => new Date().getFullYear(),
+    () => null,
+  );
 
   return <>{year}</>;
 }
+
