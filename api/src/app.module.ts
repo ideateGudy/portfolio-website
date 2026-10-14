@@ -19,9 +19,7 @@ import { HealthController } from './health.controller.js';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         pinoHttp: {
-          // In production, we want JSON for machines.
-          // In development, we use pino-pretty for humans.
-          transport: process.env.NODE_ENV !== 'production'
+          transport: config.get('NODE_ENV') !== 'production'
             ? { target: 'pino-pretty', options: { colorize: true } }
             : undefined,
         },

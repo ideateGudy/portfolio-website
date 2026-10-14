@@ -21,9 +21,10 @@ export class ProjectsService {
   async create(dto: CreateProjectDto) {
     const count = await this.prisma.project.count();
     return this.prisma.project.create({
-      data: this.buildData({ ...dto, order: count }),
+      data: this.buildData(dto, count),
     });
   }
+
 
   async update(id: string, dto: UpdateProjectDto) {
     await this.findOne(id); // 404 if missing
@@ -76,7 +77,7 @@ export class ProjectsService {
   }
 
   /** Create-time defaults (visible=true, order appended); update() never calls this. */
-  private buildData(dto: CreateProjectDto & { order?: number }): Prisma.ProjectUncheckedCreateInput {
+  private buildData(dto: CreateProjectDto, order?: number): Prisma.ProjectUncheckedCreateInput {
     const data: Prisma.ProjectUncheckedCreateInput = {
       title: dto.title,
       description: dto.description,
@@ -87,7 +88,8 @@ export class ProjectsService {
       repoUrl: dto.repoUrl || null,
       visible: dto.visible ?? true,
     };
-    if (dto.order !== undefined) data.order = dto.order;
+    if (order !== undefined) data.order = order;
     return data;
   }
 }
+
