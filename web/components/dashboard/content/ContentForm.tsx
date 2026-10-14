@@ -300,7 +300,20 @@ function ExperienceForm({ v, set }: { v: ExperienceContent; set: Setter }) {
               <Input label="Role" value={it.role ?? ''} onChange={(e) => patchItem(i, { role: e.target.value })} />
               <Input label="Company" value={it.company ?? ''} onChange={(e) => patchItem(i, { company: e.target.value })} />
             </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Input label="Duration" placeholder="e.g. 2023 - Present" value={it.duration ?? ''} onChange={(e) => patchItem(i, { duration: e.target.value })} />
+              <Input label="Location" placeholder="e.g. Remote" value={it.location ?? ''} onChange={(e) => patchItem(i, { location: e.target.value })} />
+              <Input label="Type" placeholder="e.g. Full-time / Contract" value={it.employmentType ?? ''} onChange={(e) => patchItem(i, { employmentType: e.target.value })} />
+            </div>
             <Textarea label="Description" value={it.description ?? ''} onChange={(e) => patchItem(i, { description: e.target.value })} rows={2} />
+            <div className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-fg">Skills</span>
+              <ChipsInput
+                value={it.skills ?? []}
+                onChange={(skills) => patchItem(i, { skills })}
+                placeholder="Add a skill"
+              />
+            </div>
           </div>
         </div>
       ))}

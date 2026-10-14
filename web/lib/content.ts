@@ -18,7 +18,15 @@ export type ServicesContent = {
   title: string; subtitle: string; sectionTitle: string;
   sectionSubtitle: string; items: ServiceItem[];
 };
-export type ExperienceItem = { role: string; company: string; description: string };
+export type ExperienceItem = {
+  role: string;
+  company: string;
+  description: string;
+  duration?: string;
+  location?: string;
+  employmentType?: string;
+  skills?: string[];
+};
 export type ExperienceContent = { title: string; subtitle: string; items: ExperienceItem[] };
 export type ProjectsHeader = {
   title: string; subtitle: string; sectionTitle: string; sectionSubtitle: string;
@@ -117,16 +125,45 @@ export const fallbackServices: ServicesContent = {
 };
 
 export const fallbackExperience: ExperienceContent = {
-  title: 'Experience', subtitle: 'Where I have been making an impact.',
+  title: 'Experience',
+  subtitle: 'Where I have been making an impact.',
   items: [
-    { role: 'Instructor', company: 'Ann Notch Digital Academy',
-      description: 'Teach students practical software development and cloud computing concepts, including AWS, helping learners build hands-on technical skills.' },
-    { role: 'Backend Engineer', company: 'Kingdom Scripts Tech Solutions',
-      description: 'Backend engineer intern, developing and maintaining backend services using C# and LINQ while contributing to application functionality and performance.' },
-    { role: 'Backend Engineer', company: 'Dive Africa',
-      description: 'Built secure REST APIs with Node.js, implementing OTP authentication, refresh tokens, email verification, RBAC, rate limiting, structured logging and Swagger API documentation.' },
-    { role: 'Frontend Developer', company: 'Coriftech Solutions',
-      description: 'Developed responsive web interfaces using HTML5, CSS and modern frontend technologies while contributing to real-world client projects.' },
+    {
+      role: 'Instructor',
+      company: 'Ann Notch Digital Academy',
+      duration: '2024 - Present',
+      location: 'Remote',
+      employmentType: 'Contract',
+      description: 'Teach students practical software development and cloud computing concepts, including AWS, Docker containerization, and modern JavaScript/TypeScript, helping learners build hands-on technical skills.',
+      skills: ['AWS', 'Cloud Computing', 'Docker', 'TypeScript', 'Node.js'],
+    },
+    {
+      role: 'Backend Engineer',
+      company: 'Kingdom Scripts Tech Solutions',
+      duration: '2023 - 2024',
+      location: 'Remote',
+      employmentType: 'Full-time',
+      description: 'Developed and maintained robust backend services using C# and LINQ, designing optimized database schemas and building high-performance internal microservices.',
+      skills: ['C#', '.NET', 'LINQ', 'REST APIs', 'SQL Database Design'],
+    },
+    {
+      role: 'Backend Engineer',
+      company: 'Dive Africa',
+      duration: '2022 - 2023',
+      location: 'Remote',
+      employmentType: 'Full-time',
+      description: 'Built secure REST APIs with Node.js, implementing OTP authentication, refresh tokens, email verification, RBAC, rate limiting, structured logging, and comprehensive Swagger/OpenAPI documentation.',
+      skills: ['Node.js', 'Express', 'JWT/OTP Security', 'RBAC', 'Swagger', 'Redis'],
+    },
+    {
+      role: 'Frontend Developer',
+      company: 'Coriftech Solutions',
+      duration: '2021 - 2022',
+      location: 'On-site / Hybrid',
+      employmentType: 'Full-time',
+      description: 'Developed responsive, high-performance web interfaces using modern frontend technologies, collaborating closely with backend engineers and UI/UX designers on production client deliverables.',
+      skills: ['React', 'Next.js', 'JavaScript', 'HTML5/CSS3', 'Responsive UI'],
+    },
   ],
 };
 
