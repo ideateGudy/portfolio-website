@@ -1,2 +1,12 @@
 docs/
 .github/
+
+# AI IDE scratch and agent documentation tools
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+**/skills-lock.json
+**/.agents/
+**/.claude/
+**/.windsurf/
