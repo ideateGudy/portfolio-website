@@ -8,13 +8,17 @@ type ThemeState = {
   setTheme: (theme: Theme) => void;
 };
 
-function applyTheme(theme: Theme) {
-  const resolved =
-    theme === "system"
-      ? window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light"
-      : theme;
+export function resolveTheme(theme: Theme): "light" | "dark" {
+  if (typeof window === "undefined") return "dark";
+  if (theme === "system") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return theme;
+}
+
+export function applyTheme(theme: Theme) {
+  if (typeof window === "undefined") return;
+  const resolved = resolveTheme(theme);
   document.documentElement.classList.toggle("dark", resolved === "dark");
   document.documentElement.style.colorScheme = resolved;
 }
@@ -29,9 +33,8 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: "theme",
+      name: "theme-storage",
       onRehydrateStorage: () => (state) => {
-        // Re-apply after hydration so system changes are picked up too.
         if (state) applyTheme(state.theme);
       },
     },

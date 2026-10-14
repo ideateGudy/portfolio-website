@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ToastViewport } from "@/components/ui/Toast";
@@ -29,22 +28,39 @@ export const metadata: Metadata = {
     "Portfolio of Goodnews Azonubi, Backend & DevOps Engineer specializing in scalable server architecture, resilient REST APIs, AWS cloud infrastructure, Docker, CI/CD, and fullstack modern web applications.",
 };
 
-// Reads the persisted theme before first paint to avoid a light/dark flash.
+// Reads the persisted theme synchronously before first paint to completely eliminate theme flashing
 const themeInitScript = `
 (function () {
   try {
-    var stored = localStorage.getItem("theme");
-    var theme = stored === "light" || stored === "dark" ? stored : null;
-    if (!theme) {
-      theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var raw = localStorage.getItem("theme-storage") || localStorage.getItem("theme");
+    var theme = null;
+    if (raw) {
+      try {
+        var parsed = JSON.parse(raw);
+        if (parsed && parsed.state && parsed.state.theme) {
+          theme = parsed.state.theme;
+        }
+      } catch (e) {
+        if (raw === "light" || raw === "dark" || raw === "system") {
+          theme = raw;
+        }
+      }
     }
-    if (theme === "dark") document.documentElement.classList.add("dark");
-    document.documentElement.style.colorScheme = theme;
+    var resolved = theme === "light" || theme === "dark" 
+      ? theme 
+      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+    if (resolved === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    document.documentElement.style.colorScheme = resolved;
   } catch (e) {}
 })();
 `;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
@@ -52,7 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-full flex-col">
         <a href="#main-content" className="skip-link">
