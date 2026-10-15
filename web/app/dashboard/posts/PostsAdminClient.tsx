@@ -185,7 +185,7 @@ export default function PostsAdminClient() {
 
             {/* Desktop / tablet table (hidden on small screens, visible on md+) */}
             <div className="hidden md:block scroll-x overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
+              <table className="w-full min-w-190 text-left text-sm">
                 <thead>
                   <tr className="border-b border-line text-xs tracking-wide text-muted uppercase">
                     <th className="px-4 py-3 font-medium">Title</th>

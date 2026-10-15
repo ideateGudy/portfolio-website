@@ -275,7 +275,7 @@ export function CommentsSection({
               <div
                 key={comment.id}
                 className={`glass flex flex-col gap-3 p-4 sm:p-5 ${
-                  isCommentAuthor ? 'border-accent/40 bg-accent/[0.02]' : ''
+                  isCommentAuthor ? 'border-accent/40 bg-accent/2' : ''
                 }`}
               >
                 {/* Header row: Author + Badge + Role + Date on left, Likes + Reply on right */}
