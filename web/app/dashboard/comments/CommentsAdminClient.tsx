@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { adminApi, type AdminComment, type AdminPost } from '@/lib/dashboard-api';
 import { useUIStore } from '@/store/ui';
 import { Button } from '@/components/ui/Button';
-import { formatDate } from '@/lib/format';
+import { formatDate, formatRelativeTime } from '@/lib/format';
 import { CheckIcon, CloseIcon, HeartIcon } from '@/components/ui/icons';
 
 function StatusBadge({ status }: { status: AdminComment['status'] }) {
@@ -182,7 +182,9 @@ export default function CommentsAdminClient() {
                     </div>
                     <p className="mt-0.5 text-xs text-muted">
                       On <span className="font-medium text-fg">{comment.post?.title ?? 'Post'}</span> ·{' '}
-                      {formatDate(comment.createdAt)}
+                      <time dateTime={comment.createdAt} title={formatDate(comment.createdAt)}>
+                        {formatRelativeTime(comment.createdAt)}
+                      </time>
                     </p>
                   </div>
 

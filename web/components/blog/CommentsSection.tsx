@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { HeartIcon, MessageSquareIcon } from '@/components/ui/icons';
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
-import { formatDate } from '@/lib/format';
+import { formatDate, formatRelativeTime } from '@/lib/format';
 import { postInteractionsApi, type PublicComment } from '@/lib/interactions-api';
 
 export function CommentsSection({ slug }: { slug: string }) {
@@ -226,7 +226,13 @@ export function CommentsSection({ slug }: { slug: string }) {
                     </span>
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 truncate">
                       <span className="font-semibold text-sm text-fg truncate">{comment.authorName}</span>
-                      <span className="text-xs text-muted whitespace-nowrap">· {formatDate(comment.createdAt)}</span>
+                      <time
+                        dateTime={comment.createdAt}
+                        title={formatDate(comment.createdAt)}
+                        className="text-xs text-muted whitespace-nowrap"
+                      >
+                        · {formatRelativeTime(comment.createdAt)}
+                      </time>
                     </div>
                   </div>
 
@@ -311,7 +317,13 @@ export function CommentsSection({ slug }: { slug: string }) {
                         <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                           <div className="flex min-w-0 items-center gap-1.5 truncate">
                             <span className="font-semibold text-xs text-fg truncate">{reply.authorName}</span>
-                            <span className="text-[11px] text-muted whitespace-nowrap">· {formatDate(reply.createdAt)}</span>
+                            <time
+                              dateTime={reply.createdAt}
+                              title={formatDate(reply.createdAt)}
+                              className="text-[11px] text-muted whitespace-nowrap"
+                            >
+                              · {formatRelativeTime(reply.createdAt)}
+                            </time>
                           </div>
 
                           <button
