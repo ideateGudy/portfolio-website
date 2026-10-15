@@ -5,6 +5,9 @@ export type PublicComment = {
   id: string;
   parentId: string | null;
   authorName: string;
+  authorRole?: string | null;
+  authorAvatar?: string | null;
+  isAuthor?: boolean;
   content: string;
   createdAt: string;
   status?: 'PENDING' | 'APPROVED' | 'REJECTED';

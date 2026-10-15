@@ -182,7 +182,7 @@ async function ArticleContent({ params }: { params: Promise<Params> }) {
               </div>
 
               {/* Comments & Discussion section */}
-              <CommentsSection slug={post.slug} />
+              <CommentsSection slug={post.slug} profile={c.profile} />
 
               <Link href="/blog" className="mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">
                 ← All articles
