@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
-import { IsObject } from 'class-validator';
+import { IsDefined } from 'class-validator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { ContentService } from './content.service.js';
 
 export class UpdateContentDto {
-  @IsObject()
-  value!: Record<string, unknown>;
+  @IsDefined()
+  value!: unknown;
 }
 
 /** Public: all site content as one object (PRD §8). */
