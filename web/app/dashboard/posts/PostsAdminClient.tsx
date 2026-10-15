@@ -100,92 +100,177 @@ export default function PostsAdminClient() {
             No posts yet. Create your first one.
           </p>
         ) : (
-          <div className="scroll-x overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-line text-xs tracking-wide text-muted uppercase">
-                  <th className="px-4 py-3 font-medium">Title</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium">Engagement</th>
-                  <th className="px-4 py-3 font-medium">Published</th>
-                  <th className="px-4 py-3 text-right font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {posts.map((post) => (
-                  <tr key={post.id} className="border-b border-line last:border-0">
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-fg">{post.title}</span>
-                      <span className="mt-0.5 block font-mono text-xs text-muted">/{post.slug}</span>
-                    </td>
-                    <td className="px-4 py-3">
+          <>
+            {/* Mobile-first card list (visible on < md screens) */}
+            <div className="flex flex-col divide-y divide-line md:hidden">
+              {posts.map((post) => (
+                <div key={post.id} className="flex flex-col gap-3 p-4">
+                  {/* Title and Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-sm text-fg leading-snug">{post.title}</p>
+                      <p className="mt-0.5 font-mono text-xs text-muted truncate">/{post.slug}</p>
+                    </div>
+                    <div className="shrink-0">
                       <StatusPill status={post.status} />
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
-                        <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Unique views">
-                          <EyeIcon size={13} className="text-accent" />
-                          <span>{post.uniqueViews ?? 0}</span> views
+                    </div>
+                  </div>
+
+                  {/* Engagement badges */}
+                  <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Unique views">
+                      <EyeIcon size={12} className="text-accent" />
+                      <span>{post.uniqueViews ?? 0}</span> views
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Likes">
+                      <HeartIcon size={12} className="text-red-500" />
+                      <span>{post.likesCount ?? 0}</span>
+                    </span>
+                    <Link
+                      href={`/dashboard/comments?postId=${post.id}`}
+                      className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg transition hover:bg-accent/10 hover:text-accent"
+                      title="Comments"
+                    >
+                      <MessageSquareIcon size={12} className="text-accent" />
+                      <span>{post.commentsCount ?? 0}</span>
+                      {(post.pendingCommentsCount ?? 0) > 0 && (
+                        <span className="ml-1 rounded-full bg-amber-500/20 px-1.5 py-0.2 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
+                          {post.pendingCommentsCount} pending
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Likes">
-                          <HeartIcon size={13} className="text-red-500" />
-                          <span>{post.likesCount ?? 0}</span>
-                        </span>
-                        <Link
-                          href={`/dashboard/comments?postId=${post.id}`}
-                          className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg transition hover:bg-accent/10 hover:text-accent"
-                          title="Comments"
+                      )}
+                    </Link>
+                  </div>
+
+                  {/* Date and Action buttons */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-line/40">
+                    <span className="text-xs text-muted">
+                      {formatDate(post.publishedAt) || 'Draft'}
+                    </span>
+
+                    <div className="flex flex-wrap items-center gap-1.5 ml-auto">
+                      <Link
+                        href={`/dashboard/comments?postId=${post.id}`}
+                        className="rounded-full border border-line px-2.5 py-1 text-xs text-fg hover:bg-fg/5"
+                      >
+                        Comments
+                      </Link>
+                      {post.status === 'PUBLISHED' && (
+                        <a
+                          href={`/blog/${post.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-full px-2.5 py-1 text-xs text-muted hover:bg-fg/5 hover:text-fg"
                         >
-                          <MessageSquareIcon size={13} className="text-accent" />
-                          <span>{post.commentsCount ?? 0}</span>
-                          {(post.pendingCommentsCount ?? 0) > 0 && (
-                            <span className="ml-1 rounded-full bg-amber-500/20 px-1.5 py-0.2 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
-                              {post.pendingCommentsCount} pending
-                            </span>
-                          )}
-                        </Link>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-muted">{formatDate(post.publishedAt) || '—'}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/dashboard/comments?postId=${post.id}`}
-                          className="rounded-full border border-line px-3 py-1.5 text-xs text-fg hover:bg-fg/5"
-                          title="Manage comments"
-                        >
-                          Comments
-                        </Link>
-                        {post.status === 'PUBLISHED' && (
-                          <a
-                            href={`/blog/${post.slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="rounded-full px-3 py-1.5 text-xs text-muted hover:bg-fg/5 hover:text-fg"
-                          >
-                            View
-                          </a>
-                        )}
-                        <Link
-                          href={`/dashboard/posts/${post.id}/edit`}
-                          className="rounded-full border border-line px-3 py-1.5 text-xs text-fg hover:bg-fg/5"
-                        >
-                          Edit
-                        </Link>
-                        <Button
-                          variant="ghost"
-                          className="h-8 px-3 text-xs text-red-600 dark:text-red-400"
-                          onClick={() => onDelete(post)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
+                          View ↗
+                        </a>
+                      )}
+                      <Link
+                        href={`/dashboard/posts/${post.id}/edit`}
+                        className="rounded-full border border-line px-2.5 py-1 text-xs text-fg hover:bg-fg/5"
+                      >
+                        Edit
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        className="h-7 px-2 text-xs text-red-600 dark:text-red-400"
+                        onClick={() => onDelete(post)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop / tablet table (hidden on small screens, visible on md+) */}
+            <div className="hidden md:block scroll-x overflow-x-auto">
+              <table className="w-full min-w-[760px] text-left text-sm">
+                <thead>
+                  <tr className="border-b border-line text-xs tracking-wide text-muted uppercase">
+                    <th className="px-4 py-3 font-medium">Title</th>
+                    <th className="px-4 py-3 font-medium">Status</th>
+                    <th className="px-4 py-3 font-medium">Engagement</th>
+                    <th className="px-4 py-3 font-medium">Published</th>
+                    <th className="px-4 py-3 text-right font-medium">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {posts.map((post) => (
+                    <tr key={post.id} className="border-b border-line last:border-0">
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-fg">{post.title}</span>
+                        <span className="mt-0.5 block font-mono text-xs text-muted">/{post.slug}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusPill status={post.status} />
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
+                          <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Unique views">
+                            <EyeIcon size={13} className="text-accent" />
+                            <span>{post.uniqueViews ?? 0}</span> views
+                          </span>
+                          <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Likes">
+                            <HeartIcon size={13} className="text-red-500" />
+                            <span>{post.likesCount ?? 0}</span>
+                          </span>
+                          <Link
+                            href={`/dashboard/comments?postId=${post.id}`}
+                            className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg transition hover:bg-accent/10 hover:text-accent"
+                            title="Comments"
+                          >
+                            <MessageSquareIcon size={13} className="text-accent" />
+                            <span>{post.commentsCount ?? 0}</span>
+                            {(post.pendingCommentsCount ?? 0) > 0 && (
+                              <span className="ml-1 rounded-full bg-amber-500/20 px-1.5 py-0.2 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
+                                {post.pendingCommentsCount} pending
+                              </span>
+                            )}
+                          </Link>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-muted">{formatDate(post.publishedAt) || '—'}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/dashboard/comments?postId=${post.id}`}
+                            className="rounded-full border border-line px-3 py-1.5 text-xs text-fg hover:bg-fg/5"
+                            title="Manage comments"
+                          >
+                            Comments
+                          </Link>
+                          {post.status === 'PUBLISHED' && (
+                            <a
+                              href={`/blog/${post.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full px-3 py-1.5 text-xs text-muted hover:bg-fg/5 hover:text-fg"
+                            >
+                              View
+                            </a>
+                          )}
+                          <Link
+                            href={`/dashboard/posts/${post.id}/edit`}
+                            className="rounded-full border border-line px-3 py-1.5 text-xs text-fg hover:bg-fg/5"
+                          >
+                            Edit
+                          </Link>
+                          <Button
+                            variant="ghost"
+                            className="h-8 px-3 text-xs text-red-600 dark:text-red-400"
+                            onClick={() => onDelete(post)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>
