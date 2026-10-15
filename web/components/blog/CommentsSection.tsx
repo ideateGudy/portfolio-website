@@ -56,7 +56,9 @@ export function CommentsSection({ slug }: { slug: string }) {
         content: content.trim(),
       });
       setContent('');
-      setFeedback(res.message);
+      if (res.comment) {
+        setComments((prev) => [...(prev || []), res.comment]);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit comment');
     } finally {
@@ -79,7 +81,9 @@ export function CommentsSection({ slug }: { slug: string }) {
       });
       setReplyContent('');
       setReplyingToId(null);
-      setFeedback(res.message);
+      if (res.comment) {
+        setComments((prev) => [...(prev || []), res.comment]);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit reply');
     } finally {
@@ -171,7 +175,7 @@ export function CommentsSection({ slug }: { slug: string }) {
       <form onSubmit={handleSubmit} className="glass mt-6 flex flex-col gap-3.5 p-5">
         <p className="text-sm font-semibold text-fg">Leave a Comment</p>
         <p className="text-xs text-muted">
-          All guests are welcome. You can provide your name or leave it blank to post as <span className="font-mono text-fg">Anonymous</span>. Comments are published once reviewed.
+          All guests are welcome. You can provide your name or leave it blank to post as <span className="font-mono text-fg">Anonymous</span>.
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2">

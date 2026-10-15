@@ -85,6 +85,7 @@ model Comment {
   authorName  String        @default("Anonymous")
   content     String
   status      CommentStatus @default(PENDING)
+  visitorId   String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -95,6 +96,7 @@ model Comment {
 
   @@index([postId, status])
   @@index([parentId])
+  @@index([postId, visitorId])
 }
 
 model CommentLike {

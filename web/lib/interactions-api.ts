@@ -7,6 +7,7 @@ export type PublicComment = {
   authorName: string;
   content: string;
   createdAt: string;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED';
   likesCount: number;
   repliesCount: number;
   hasLiked: boolean;
@@ -74,11 +75,12 @@ export const postInteractionsApi = {
   createComment: async (
     slug: string,
     data: { authorName?: string; content: string; parentId?: string }
-  ): Promise<{ message: string; comment: { id: string; authorName: string; status: string } }> => {
+  ): Promise<{ message: string; comment: PublicComment }> => {
+    const visitorId = getVisitorId();
     const res = await fetch(`/backend/posts/${encodeURIComponent(slug)}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, visitorId }),
     });
     const json = await res.json().catch(() => null);
     if (!res.ok) {

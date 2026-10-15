@@ -206,14 +206,36 @@ export class PostsService {
     });
     if (!post) throw new NotFoundException('Post not found');
 
+    // Return all APPROVED comments, plus any PENDING comment authored by this visitor
+    const statusCondition: Prisma.CommentWhereInput = visitorId
+      ? {
+          OR: [
+            { status: 'APPROVED' },
+            { status: 'PENDING', visitorId },
+          ],
+        }
+      : { status: 'APPROVED' };
+
     const comments = await this.prisma.comment.findMany({
       where: {
         postId: post.id,
-        status: 'APPROVED',
+        ...statusCondition,
       },
       include: {
         _count: {
-          select: { likes: true, replies: { where: { status: 'APPROVED' } } },
+          select: {
+            likes: true,
+            replies: {
+              where: visitorId
+                ? {
+                    OR: [
+                      { status: 'APPROVED' },
+                      { status: 'PENDING', visitorId },
+                    ],
+                  }
+                : { status: 'APPROVED' },
+            },
+          },
         },
         likes: visitorId
           ? {
@@ -231,13 +253,17 @@ export class PostsService {
       authorName: c.authorName || 'Anonymous',
       content: c.content,
       createdAt: c.createdAt,
+      status: c.status,
       likesCount: c._count.likes,
       repliesCount: c._count.replies,
       hasLiked: visitorId ? c.likes.length > 0 : false,
     }));
   }
 
-  async addComment(slug: string, dto: { authorName?: string; content: string; parentId?: string }) {
+  async addComment(
+    slug: string,
+    dto: { authorName?: string; content: string; parentId?: string; visitorId?: string }
+  ) {
     const post = await this.prisma.post.findFirst({
       where: { slug, status: PostStatus.PUBLISHED },
       select: { id: true },
@@ -261,16 +287,23 @@ export class PostsService {
         parentId: dto.parentId || null,
         authorName: trimmedName,
         content: trimmedContent,
+        visitorId: dto.visitorId || null,
         status: 'PENDING',
       },
     });
 
     return {
-      message: 'Comment submitted successfully! It will be visible after review.',
+      message: 'Comment posted successfully',
       comment: {
         id: created.id,
+        parentId: created.parentId,
         authorName: created.authorName,
+        content: created.content,
+        createdAt: created.createdAt,
         status: created.status,
+        likesCount: 0,
+        repliesCount: 0,
+        hasLiked: false,
       },
     };
   }

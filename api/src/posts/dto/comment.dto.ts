@@ -14,5 +14,9 @@ export class CreateCommentDto {
   @IsOptional()
   @IsString()
   parentId?: string;
+
+  @IsOptional()
+  @IsString()
+  visitorId?: string;
 }
 
