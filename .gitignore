@@ -1,5 +1,6 @@
 docs/
 .github/
+node_modules/
 
 # AI IDE scratch and agent documentation tools
 .agents/

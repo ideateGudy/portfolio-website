@@ -15,7 +15,7 @@ export function Writing({ posts, profile }: Props) {
   return (
     <section id="writing" aria-label="Writing" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="05" label="Writing" title="Technical articles" subtitle="Notes on backend, DevOps, cloud and fullstack engineering." />
+        <SectionHeader index="06" label="Writing" title="Technical articles" subtitle="Notes on backend, DevOps, cloud and fullstack engineering." />
       </Reveal>
       {posts.length === 0 ? (
         <p className="mt-8 text-muted">Articles are on the way — check back soon.</p>
@@ -29,7 +29,7 @@ export function Writing({ posts, profile }: Props) {
                   <Reveal delay={Math.min(i * 0.06, 0.2)} className="h-full">
                     <article className="glass glass-hover flex h-full flex-col overflow-hidden">
                       {cover ? (
-                        <div className="relative aspect-[16/9] overflow-hidden">
+                        <div className="relative aspect-video overflow-hidden">
                           <Image
                             src={cover}
                             alt={post.coverAlt || `${post.title} cover`}
