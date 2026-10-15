@@ -188,7 +188,17 @@ function AboutForm({ v, set }: { v: AboutContent; set: Setter }) {
       <Input label="Title" value={v.title ?? ''} onChange={(e) => set({ title: e.target.value })} />
       <Input label="Subtitle" value={v.subtitle ?? ''} onChange={(e) => set({ subtitle: e.target.value })} />
       <Textarea label="Statement" value={v.statement ?? ''} onChange={(e) => set({ statement: e.target.value })} rows={2} />
-      <Textarea label="Paragraph" value={v.paragraph ?? ''} onChange={(e) => set({ paragraph: e.target.value })} rows={4} />
+      <div>
+        <Textarea
+          label="Paragraph"
+          value={v.paragraph ?? ''}
+          onChange={(e) => set({ paragraph: e.target.value })}
+          rows={6}
+        />
+        <p className="mt-1 text-xs text-muted">
+          Supports **bold text**, *italics*, line breaks, and blank lines between paragraphs.
+        </p>
+      </div>
       <div className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-fg">Principles</span>
         <ChipsInput value={v.principles ?? []} onChange={(principles) => set({ principles })} placeholder="Add a principle" />
