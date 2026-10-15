@@ -28,6 +28,26 @@ async function revalidate(tags: string[]) {
   }).catch(() => undefined);
 }
 
+export type AdminComment = {
+  id: string;
+  postId: string;
+  parentId: string | null;
+  authorName: string;
+  content: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  createdAt: string;
+  updatedAt: string;
+  post?: {
+    id: string;
+    title: string;
+    slug: string;
+  };
+  _count?: {
+    likes: number;
+    replies: number;
+  };
+};
+
 export type AdminPost = {
   id: string;
   title: string;
@@ -43,6 +63,10 @@ export type AdminPost = {
   canonicalUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  uniqueViews?: number;
+  likesCount?: number;
+  commentsCount?: number;
+  pendingCommentsCount?: number;
 };
 
 export type AdminProject = {
@@ -81,6 +105,23 @@ export const adminApi = {
       }),
     remove: (id: string) =>
       req<{ ok: boolean }>(`/admin/posts/${id}`, { method: 'DELETE' }).then((r) => {
+        void revalidate(['posts']);
+        return r;
+      }),
+    listComments: (postId?: string) =>
+      req<AdminComment[]>(postId ? `/admin/posts/${postId}/comments` : '/admin/posts/comments/all'),
+    updateCommentStatus: (commentId: string, status: 'APPROVED' | 'REJECTED') =>
+      req<AdminComment>(`/admin/posts/comments/${commentId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+      }).then((c) => {
+        void revalidate(['posts']);
+        return c;
+      }),
+    deleteComment: (commentId: string) =>
+      req<{ success: boolean }>(`/admin/posts/comments/${commentId}`, {
+        method: 'DELETE',
+      }).then((r) => {
         void revalidate(['posts']);
         return r;
       }),

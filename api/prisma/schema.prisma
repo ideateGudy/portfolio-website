@@ -17,6 +17,12 @@ enum PostStatus {
   PUBLISHED
 }
 
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -41,7 +47,66 @@ model Post {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
+  views        PostView[]
+  likes        PostLike[]
+  comments     Comment[]
+
   @@index([status, publishedAt])
+}
+
+model PostView {
+  id        String   @id @default(cuid())
+  postId    String
+  visitorId String
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, visitorId])
+  @@index([postId])
+}
+
+model PostLike {
+  id        String   @id @default(cuid())
+  postId    String
+  visitorId String
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, visitorId])
+  @@index([postId])
+}
+
+model Comment {
+  id          String        @id @default(cuid())
+  postId      String
+  parentId    String?
+  authorName  String        @default("Anonymous")
+  content     String
+  status      CommentStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  post        Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[]     @relation("CommentReplies")
+  likes       CommentLike[]
+
+  @@index([postId, status])
+  @@index([parentId])
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  commentId String
+  visitorId String
+  createdAt DateTime @default(now())
+
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, visitorId])
+  @@index([commentId])
 }
 
 model Project {

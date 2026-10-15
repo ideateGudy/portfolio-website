@@ -18,6 +18,7 @@ import {
   PostsIcon,
   ProjectsIcon,
   ContentIcon,
+  MessageSquareIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@/components/ui/icons';
@@ -26,6 +27,7 @@ import { cld } from '@/lib/format';
 
 const NAV = [
   { href: '/dashboard/posts', label: 'Posts', icon: PostsIcon },
+  { href: '/dashboard/comments', label: 'Comments', icon: MessageSquareIcon },
   { href: '/dashboard/projects', label: 'Projects', icon: ProjectsIcon },
   { href: '/dashboard/content', label: 'Site content', icon: ContentIcon },
   { href: '/dashboard/settings', label: 'Settings', icon: SettingsIcon },

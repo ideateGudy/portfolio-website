@@ -68,11 +68,287 @@ export class PostsService {
     return post;
   }
 
-  findAllAdmin() {
-    return this.prisma.post.findMany({
-      select: listSelect,
+  async findAllAdmin() {
+    const posts = await this.prisma.post.findMany({
+      select: {
+        ...listSelect,
+        _count: {
+          select: {
+            views: true,
+            likes: true,
+            comments: true,
+          },
+        },
+      },
       orderBy: [{ updatedAt: 'desc' }],
     });
+
+    const pendingCounts = await this.prisma.comment.groupBy({
+      by: ['postId'],
+      where: { status: 'PENDING' },
+      _count: { _all: true },
+    });
+    const pendingMap = new Map(pendingCounts.map((c) => [c.postId, c._count._all]));
+
+    return posts.map((p) => ({
+      ...p,
+      uniqueViews: p._count.views,
+      likesCount: p._count.likes,
+      commentsCount: p._count.comments,
+      pendingCommentsCount: pendingMap.get(p.id) ?? 0,
+    }));
+  }
+
+  async recordView(slug: string, visitorId: string) {
+    const post = await this.prisma.post.findFirst({
+      where: { slug, status: PostStatus.PUBLISHED },
+      select: { id: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    if (visitorId) {
+      await this.prisma.postView
+        .upsert({
+          where: {
+            postId_visitorId: {
+              postId: post.id,
+              visitorId,
+            },
+          },
+          create: {
+            postId: post.id,
+            visitorId,
+          },
+          update: {},
+        })
+        .catch(() => undefined);
+    }
+
+    const uniqueViews = await this.prisma.postView.count({
+      where: { postId: post.id },
+    });
+    return { uniqueViews };
+  }
+
+  async togglePostLike(slug: string, visitorId: string) {
+    if (!visitorId) throw new BadRequestException('visitorId required');
+    const post = await this.prisma.post.findFirst({
+      where: { slug, status: PostStatus.PUBLISHED },
+      select: { id: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    const existing = await this.prisma.postLike.findUnique({
+      where: {
+        postId_visitorId: {
+          postId: post.id,
+          visitorId,
+        },
+      },
+    });
+
+    let liked = false;
+    if (existing) {
+      await this.prisma.postLike.delete({
+        where: { id: existing.id },
+      });
+      liked = false;
+    } else {
+      await this.prisma.postLike.create({
+        data: {
+          postId: post.id,
+          visitorId,
+        },
+      });
+      liked = true;
+    }
+
+    const likesCount = await this.prisma.postLike.count({
+      where: { postId: post.id },
+    });
+
+    return { liked, likesCount };
+  }
+
+  async getPostInteractions(slug: string, visitorId?: string) {
+    const post = await this.prisma.post.findFirst({
+      where: { slug, status: PostStatus.PUBLISHED },
+      select: { id: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    const [viewsCount, likesCount, userLiked] = await Promise.all([
+      this.prisma.postView.count({ where: { postId: post.id } }),
+      this.prisma.postLike.count({ where: { postId: post.id } }),
+      visitorId
+        ? this.prisma.postLike.findUnique({
+            where: {
+              postId_visitorId: {
+                postId: post.id,
+                visitorId,
+              },
+            },
+          })
+        : null,
+    ]);
+
+    return {
+      viewsCount,
+      likesCount,
+      hasLiked: !!userLiked,
+    };
+  }
+
+  async listApprovedComments(slug: string, visitorId?: string) {
+    const post = await this.prisma.post.findFirst({
+      where: { slug, status: PostStatus.PUBLISHED },
+      select: { id: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    const comments = await this.prisma.comment.findMany({
+      where: {
+        postId: post.id,
+        status: 'APPROVED',
+      },
+      include: {
+        _count: {
+          select: { likes: true, replies: { where: { status: 'APPROVED' } } },
+        },
+        likes: visitorId
+          ? {
+              where: { visitorId },
+              select: { id: true },
+            }
+          : false,
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return comments.map((c) => ({
+      id: c.id,
+      parentId: c.parentId,
+      authorName: c.authorName || 'Anonymous',
+      content: c.content,
+      createdAt: c.createdAt,
+      likesCount: c._count.likes,
+      repliesCount: c._count.replies,
+      hasLiked: visitorId ? c.likes.length > 0 : false,
+    }));
+  }
+
+  async addComment(slug: string, dto: { authorName?: string; content: string; parentId?: string }) {
+    const post = await this.prisma.post.findFirst({
+      where: { slug, status: PostStatus.PUBLISHED },
+      select: { id: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    if (dto.parentId) {
+      const parent = await this.prisma.comment.findFirst({
+        where: { id: dto.parentId, postId: post.id },
+      });
+      if (!parent) throw new NotFoundException('Parent comment not found');
+    }
+
+    const trimmedName = dto.authorName?.trim() || 'Anonymous';
+    const trimmedContent = dto.content?.trim();
+    if (!trimmedContent) throw new BadRequestException('Comment content cannot be empty');
+
+    const created = await this.prisma.comment.create({
+      data: {
+        postId: post.id,
+        parentId: dto.parentId || null,
+        authorName: trimmedName,
+        content: trimmedContent,
+        status: 'PENDING',
+      },
+    });
+
+    return {
+      message: 'Comment submitted successfully! It will be visible after review.',
+      comment: {
+        id: created.id,
+        authorName: created.authorName,
+        status: created.status,
+      },
+    };
+  }
+
+  async toggleCommentLike(commentId: string, visitorId: string) {
+    if (!visitorId) throw new BadRequestException('visitorId required');
+    const comment = await this.prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) throw new NotFoundException('Comment not found');
+
+    const existing = await this.prisma.commentLike.findUnique({
+      where: {
+        commentId_visitorId: {
+          commentId,
+          visitorId,
+        },
+      },
+    });
+
+    let liked = false;
+    if (existing) {
+      await this.prisma.commentLike.delete({ where: { id: existing.id } });
+      liked = false;
+    } else {
+      await this.prisma.commentLike.create({
+        data: { commentId, visitorId },
+      });
+      liked = true;
+    }
+
+    const likesCount = await this.prisma.commentLike.count({
+      where: { commentId },
+    });
+
+    return { liked, likesCount };
+  }
+
+  async listCommentsAdmin(postId?: string, status?: 'PENDING' | 'APPROVED' | 'REJECTED') {
+    return this.prisma.comment.findMany({
+      where: {
+        ...(postId ? { postId } : {}),
+        ...(status ? { status } : {}),
+      },
+      include: {
+        post: {
+          select: { id: true, title: true, slug: true },
+        },
+        _count: {
+          select: { likes: true, replies: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async updateCommentStatusAdmin(commentId: string, status: 'APPROVED' | 'REJECTED') {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) throw new NotFoundException('Comment not found');
+
+    return this.prisma.comment.update({
+      where: { id: commentId },
+      data: { status },
+    });
+  }
+
+  async deleteCommentAdmin(commentId: string) {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) throw new NotFoundException('Comment not found');
+
+    await this.prisma.comment.delete({
+      where: { id: commentId },
+    });
+    return { success: true };
   }
 
   async findOneAdmin(id: string) {

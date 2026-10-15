@@ -6,6 +6,7 @@ import { adminApi, type AdminPost } from '@/lib/dashboard-api';
 import { useUIStore } from '@/store/ui';
 import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/format';
+import { EyeIcon, HeartIcon, MessageSquareIcon } from '@/components/ui/icons';
 
 function StatusPill({ status }: { status: AdminPost['status'] }) {
   const published = status === 'PUBLISHED';
@@ -100,11 +101,12 @@ export default function PostsAdminClient() {
           </p>
         ) : (
           <div className="scroll-x overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-sm">
+            <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
                 <tr className="border-b border-line text-xs tracking-wide text-muted uppercase">
                   <th className="px-4 py-3 font-medium">Title</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">Engagement</th>
                   <th className="px-4 py-3 font-medium">Published</th>
                   <th className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
@@ -119,9 +121,41 @@ export default function PostsAdminClient() {
                     <td className="px-4 py-3">
                       <StatusPill status={post.status} />
                     </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Unique views">
+                          <EyeIcon size={13} className="text-accent" />
+                          <span>{post.uniqueViews ?? 0}</span> views
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg" title="Likes">
+                          <HeartIcon size={13} className="text-red-500" />
+                          <span>{post.likesCount ?? 0}</span>
+                        </span>
+                        <Link
+                          href={`/dashboard/comments?postId=${post.id}`}
+                          className="inline-flex items-center gap-1 rounded-md bg-fg/5 px-2 py-0.5 text-fg transition hover:bg-accent/10 hover:text-accent"
+                          title="Comments"
+                        >
+                          <MessageSquareIcon size={13} className="text-accent" />
+                          <span>{post.commentsCount ?? 0}</span>
+                          {(post.pendingCommentsCount ?? 0) > 0 && (
+                            <span className="ml-1 rounded-full bg-amber-500/20 px-1.5 py-0.2 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
+                              {post.pendingCommentsCount} pending
+                            </span>
+                          )}
+                        </Link>
+                      </div>
+                    </td>
                     <td className="px-4 py-3 text-muted">{formatDate(post.publishedAt) || '—'}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/dashboard/comments?postId=${post.id}`}
+                          className="rounded-full border border-line px-3 py-1.5 text-xs text-fg hover:bg-fg/5"
+                          title="Manage comments"
+                        >
+                          Comments
+                        </Link>
                         {post.status === 'PUBLISHED' && (
                           <a
                             href={`/blog/${post.slug}`}

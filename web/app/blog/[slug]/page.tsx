@@ -13,6 +13,8 @@ import { cld } from '@/lib/format';
 import { renderFormattedInline } from '@/lib/textFormatter';
 import { ArticleBody } from '@/lib/markdown';
 import { AuthorBadge } from '@/components/blog/AuthorBadge';
+import { PostEngagementBar } from '@/components/blog/PostEngagementBar';
+import { CommentsSection } from '@/components/blog/CommentsSection';
 import { ZoomableImage } from '@/components/blog/ZoomableImage';
 import ArticleLoading from './loading';
 
@@ -139,6 +141,10 @@ async function ArticleContent({ params }: { params: Promise<Params> }) {
                   ))}
                 </ul>
               ) : null}
+
+              <div className="mt-6">
+                <PostEngagementBar slug={post.slug} />
+              </div>
             </header>
 
             <div className="mx-auto mt-10 max-w-[68ch] border-t border-line pt-8">
@@ -174,6 +180,10 @@ async function ArticleContent({ params }: { params: Promise<Params> }) {
                   ) : null}
                 </div>
               </div>
+
+              {/* Comments & Discussion section */}
+              <CommentsSection slug={post.slug} />
+
               <Link href="/blog" className="mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">
                 ← All articles
               </Link>
