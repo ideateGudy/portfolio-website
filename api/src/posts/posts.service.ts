@@ -251,6 +251,9 @@ export class PostsService {
       id: c.id,
       parentId: c.parentId,
       authorName: c.authorName || 'Anonymous',
+      authorRole: c.authorRole,
+      authorAvatar: c.authorAvatar,
+      isAuthor: c.isAuthor,
       content: c.content,
       createdAt: c.createdAt,
       status: c.status,
@@ -262,7 +265,15 @@ export class PostsService {
 
   async addComment(
     slug: string,
-    dto: { authorName?: string; content: string; parentId?: string; visitorId?: string }
+    dto: {
+      authorName?: string;
+      content: string;
+      parentId?: string;
+      visitorId?: string;
+      authorRole?: string;
+      authorAvatar?: string;
+      isAuthor?: boolean;
+    }
   ) {
     const post = await this.prisma.post.findFirst({
       where: { slug, status: PostStatus.PUBLISHED },
@@ -281,14 +292,20 @@ export class PostsService {
     const trimmedContent = dto.content?.trim();
     if (!trimmedContent) throw new BadRequestException('Comment content cannot be empty');
 
+    // If submitted by the verified logged-in author, automatically approve it
+    const status = dto.isAuthor ? 'APPROVED' : 'PENDING';
+
     const created = await this.prisma.comment.create({
       data: {
         postId: post.id,
         parentId: dto.parentId || null,
         authorName: trimmedName,
+        authorRole: dto.authorRole || null,
+        authorAvatar: dto.authorAvatar || null,
+        isAuthor: !!dto.isAuthor,
         content: trimmedContent,
         visitorId: dto.visitorId || null,
-        status: 'PENDING',
+        status,
       },
     });
 
@@ -298,6 +315,9 @@ export class PostsService {
         id: created.id,
         parentId: created.parentId,
         authorName: created.authorName,
+        authorRole: created.authorRole,
+        authorAvatar: created.authorAvatar,
+        isAuthor: created.isAuthor,
         content: created.content,
         createdAt: created.createdAt,
         status: created.status,

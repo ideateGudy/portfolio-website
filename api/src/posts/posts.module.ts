@@ -3,9 +3,10 @@ import { PostsController } from './posts.controller.js';
 import { AdminPostsController } from './admin-posts.controller.js';
 import { PostsService } from './posts.service.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { ContentModule } from '../content/content.module.js';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, ContentModule],
   controllers: [PostsController, AdminPostsController],
   providers: [PostsService],
 })

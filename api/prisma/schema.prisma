@@ -79,20 +79,23 @@ model PostLike {
 }
 
 model Comment {
-  id          String        @id @default(cuid())
-  postId      String
-  parentId    String?
-  authorName  String        @default("Anonymous")
-  content     String
-  status      CommentStatus @default(PENDING)
-  visitorId   String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  postId       String
+  parentId     String?
+  authorName   String        @default("Anonymous")
+  authorRole   String?
+  authorAvatar String?
+  isAuthor     Boolean       @default(false)
+  content      String
+  status       CommentStatus @default(PENDING)
+  visitorId    String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  post        Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
-  parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies     Comment[]     @relation("CommentReplies")
-  likes       CommentLike[]
+  post         Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent       Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies      Comment[]     @relation("CommentReplies")
+  likes        CommentLike[]
 
   @@index([postId, status])
   @@index([parentId])

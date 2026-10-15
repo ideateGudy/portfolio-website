@@ -63,4 +63,12 @@ export class AuthService {
     });
     return { ok: true, message: 'Password updated successfully' };
   }
+
+  async verifyToken(token: string): Promise<{ sub: string; email: string; role: string } | null> {
+    try {
+      return await this.jwtService.verifyAsync(token);
+    } catch {
+      return null;
+    }
+  }
 }
