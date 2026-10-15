@@ -157,6 +157,41 @@ async function main() {
         },
       ],
     },
+    education: {
+      title: 'Education',
+      subtitle: 'Academic background & certifications.',
+      items: [
+        {
+          school: 'AltSchool Africa',
+          degree: 'Diploma, Cloud Engineering',
+          fieldOfStudy: 'Cloud Engineering',
+          duration: '2023 - 2024',
+          skills: [
+            'CI/CD',
+            'Amazon Web Services (AWS)',
+            'Docker',
+            'Linux',
+            'Terraform',
+            'Kubernetes',
+          ],
+        },
+        {
+          school: 'Delta State University, Nigeria',
+          degree: 'Bachelor of Science - BS, Computer Science',
+          fieldOfStudy: 'Computer Science',
+          duration: '2018 - 2023',
+          grade: 'Second Class (Upper Division)',
+          activities: 'NACOS & NASS',
+          skills: [
+            'Object-Oriented Programming (OOP)',
+            'Compiler Construction',
+            'Data Structures & Algorithms',
+            'Database Systems',
+            'Software Engineering',
+          ],
+        },
+      ],
+    },
     projects: {
       title: 'Selected work',
       subtitle: 'Projects',

@@ -7,6 +7,7 @@ export const CONTENT_KEYS = [
   'about',
   'services',
   'experience',
+  'education',
   'projects',
   'techStack',
   'contact',
