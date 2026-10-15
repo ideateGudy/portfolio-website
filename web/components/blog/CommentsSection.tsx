@@ -218,21 +218,24 @@ export function CommentsSection({ slug }: { slug: string }) {
             const isReplying = replyingToId === comment.id;
 
             return (
-              <div key={comment.id} className="glass flex flex-col gap-3 p-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-accent/15 font-mono text-xs font-bold text-accent">
+              <div key={comment.id} className="glass flex flex-col gap-3 p-4 sm:p-5">
+                {/* Header row: Author + Date on left, Likes + Reply button on right, wraps on small screens */}
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent/15 font-mono text-xs font-bold text-accent">
                       {comment.authorName.slice(0, 2).toUpperCase()}
                     </span>
-                    <span className="font-semibold text-sm text-fg">{comment.authorName}</span>
-                    <span className="text-xs text-muted">· {formatDate(comment.createdAt)}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 truncate">
+                      <span className="font-semibold text-sm text-fg truncate">{comment.authorName}</span>
+                      <span className="text-xs text-muted whitespace-nowrap">· {formatDate(comment.createdAt)}</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-1.5 ml-auto sm:ml-0">
                     <button
                       type="button"
                       onClick={() => handleToggleCommentLike(comment.id)}
-                      className={`group flex items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors ${
+                      className={`group flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs transition-colors ${
                         comment.hasLiked
                           ? 'bg-red-500/15 text-red-500 font-semibold'
                           : 'hover:bg-fg/5 text-muted hover:text-fg'
@@ -240,7 +243,7 @@ export function CommentsSection({ slug }: { slug: string }) {
                       aria-label="Like comment"
                     >
                       <HeartIcon
-                        size={12}
+                        size={13}
                         className={`transition-transform duration-200 group-hover:scale-110 ${
                           comment.hasLiked ? 'fill-red-500 text-red-500' : ''
                         }`}
@@ -251,14 +254,14 @@ export function CommentsSection({ slug }: { slug: string }) {
                     <button
                       type="button"
                       onClick={() => setReplyingToId(isReplying ? null : comment.id)}
-                      className="rounded-full px-2.5 py-0.5 text-xs text-muted transition-colors hover:bg-fg/5 hover:text-fg"
+                      className="rounded-full border border-line/60 px-3 py-1 text-xs text-muted transition-colors hover:bg-fg/5 hover:text-fg"
                     >
                       {isReplying ? 'Cancel' : 'Reply'}
                     </button>
                   </div>
                 </div>
 
-                <p className="text-sm text-fg whitespace-pre-wrap leading-relaxed">
+                <p className="text-sm text-fg whitespace-pre-wrap leading-relaxed break-words">
                   {comment.content}
                 </p>
 
@@ -303,19 +306,19 @@ export function CommentsSection({ slug }: { slug: string }) {
 
                 {/* Nested Replies */}
                 {replies.length > 0 && (
-                  <div className="mt-3 ml-4 flex flex-col gap-3 border-l-2 border-line pl-4">
+                  <div className="mt-3 ml-2 sm:ml-4 flex flex-col gap-3 border-l-2 border-line pl-3 sm:pl-4">
                     {replies.map((reply) => (
-                      <div key={reply.id} className="flex flex-col gap-1.5 rounded-lg bg-fg/5 p-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-xs text-fg">{reply.authorName}</span>
-                            <span className="text-[11px] text-muted">· {formatDate(reply.createdAt)}</span>
+                      <div key={reply.id} className="flex flex-col gap-2 rounded-lg bg-fg/5 p-3">
+                        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                          <div className="flex min-w-0 items-center gap-1.5 truncate">
+                            <span className="font-semibold text-xs text-fg truncate">{reply.authorName}</span>
+                            <span className="text-[11px] text-muted whitespace-nowrap">· {formatDate(reply.createdAt)}</span>
                           </div>
 
                           <button
                             type="button"
                             onClick={() => handleToggleCommentLike(reply.id)}
-                            className={`group flex items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors ${
+                            className={`group flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors ml-auto sm:ml-0 ${
                               reply.hasLiked
                                 ? 'bg-red-500/15 text-red-500 font-semibold'
                                 : 'hover:bg-fg/5 text-muted hover:text-fg'
@@ -330,7 +333,7 @@ export function CommentsSection({ slug }: { slug: string }) {
                             <span>{reply.likesCount}</span>
                           </button>
                         </div>
-                        <p className="text-xs text-fg whitespace-pre-wrap leading-relaxed">
+                        <p className="text-xs text-fg whitespace-pre-wrap leading-relaxed break-words">
                           {reply.content}
                         </p>
                       </div>
