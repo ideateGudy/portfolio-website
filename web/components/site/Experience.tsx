@@ -127,7 +127,7 @@ export function Experience({ experience }: { experience: ExperienceContent }) {
                           /* Internal role timeline bullet */
                           <span
                             aria-hidden
-                            className="absolute top-1.5 -left-[25px] sm:-left-[29px] h-2.5 w-2.5 rounded-full border-2 border-surface bg-muted/60"
+                            className="absolute top-1.5 -left-6.25 sm:-left-7.25 h-2.5 w-2.5 rounded-full border-2 border-surface bg-muted/60"
                           />
                         ) : null}
 
