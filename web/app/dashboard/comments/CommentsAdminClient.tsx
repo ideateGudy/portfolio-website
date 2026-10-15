@@ -123,37 +123,37 @@ export default function CommentsAdminClient() {
         </p>
       )}
 
-      {/* Filters */}
-      <div className="glass mb-6 flex flex-wrap items-center gap-4 p-4">
-        <div className="flex flex-col gap-1">
+      {/* Filters: mobile-first flex-col, sm:flex-row with min-w-0 to prevent card overflow */}
+      <div className="glass mb-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4">
+        <div className="flex flex-col gap-1 min-w-0 flex-1 max-w-full">
           <label htmlFor="filter-post" className="text-xs font-medium text-muted">Filter by Post</label>
           <select
             id="filter-post"
             value={filterPostId}
             onChange={(e) => setFilterPostId(e.target.value)}
-            className="h-9 rounded-lg border border-line bg-transparent px-3 text-xs text-fg focus-visible:outline-accent"
+            className="h-10 sm:h-9 w-full max-w-full rounded-lg border border-line bg-transparent px-3 text-xs text-fg focus-visible:outline-accent truncate"
           >
-            <option value="">All Posts</option>
+            <option value="" className="bg-bg text-fg">All Posts</option>
             {posts.map((p) => (
-              <option key={p.id} value={p.id} className="bg-bg text-fg">
+              <option key={p.id} value={p.id} className="bg-bg text-fg truncate">
                 {p.title}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-w-0 sm:w-48 max-w-full">
           <label htmlFor="filter-status" className="text-xs font-medium text-muted">Filter by Status</label>
           <select
             id="filter-status"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="h-9 rounded-lg border border-line bg-transparent px-3 text-xs text-fg focus-visible:outline-accent"
+            className="h-10 sm:h-9 w-full max-w-full rounded-lg border border-line bg-transparent px-3 text-xs text-fg focus-visible:outline-accent"
           >
-            <option value="ALL">All Statuses</option>
-            <option value="PENDING">Pending Review</option>
-            <option value="APPROVED">Approved</option>
-            <option value="REJECTED">Rejected</option>
+            <option value="ALL" className="bg-bg text-fg">All Statuses</option>
+            <option value="PENDING" className="bg-bg text-fg">Pending Review</option>
+            <option value="APPROVED" className="bg-bg text-fg">Approved</option>
+            <option value="REJECTED" className="bg-bg text-fg">Rejected</option>
           </select>
         </div>
       </div>
