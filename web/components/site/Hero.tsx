@@ -3,6 +3,7 @@ import { Reveal } from '@/components/motion/Reveal';
 import { Tag } from '@/components/ui/Tag';
 import { SocialLinks } from '@/components/site/SocialLinks';
 import { cld } from '@/lib/format';
+import { renderFormattedInline } from '@/lib/textFormatter';
 import type { HeroContent, ProfileContent, SocialsContent } from '@/lib/content';
 
 type Props = { hero: HeroContent; profile: ProfileContent; socials: SocialsContent; resumeUrl: string };
@@ -64,8 +65,14 @@ export function Hero({ hero, profile, socials, resumeUrl }: Props) {
                 <p className="text-sm text-muted">{profile.role}</p>
               </div>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-muted">
-              <span className="font-medium text-fg">Current focus:</span> {hero.currentFocus}
+            {profile.bio ? (
+              <p className="mt-4 text-sm leading-relaxed text-muted">
+                {renderFormattedInline(profile.bio)}
+              </p>
+            ) : null}
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              <span className="font-medium text-fg">Current focus:</span>{' '}
+              {renderFormattedInline(hero.currentFocus)}
             </p>
             <div className="mt-4"><SocialLinks socials={socials} /></div>
             <p className="mt-4 border-t border-line pt-4 text-xs text-muted">{hero.availability}</p>

@@ -10,6 +10,7 @@ import { Tag } from '@/components/ui/Tag';
 import { getContent, getPost, getPosts } from '@/lib/api';
 import { parseContent } from '@/lib/content';
 import { cld } from '@/lib/format';
+import { renderFormattedInline } from '@/lib/textFormatter';
 import { ArticleBody } from '@/lib/markdown';
 import { AuthorBadge } from '@/components/blog/AuthorBadge';
 import { ZoomableImage } from '@/components/blog/ZoomableImage';
@@ -166,7 +167,11 @@ async function ArticleContent({ params }: { params: Promise<Params> }) {
                 <div>
                   <p className="font-semibold text-fg">{c.profile.name}</p>
                   <p className="text-sm text-muted">{c.profile.role}</p>
-                  {c.profile.bio ? <p className="mt-1 text-sm text-muted">{c.profile.bio}</p> : null}
+                  {c.profile.bio ? (
+                    <p className="mt-1 text-sm text-muted">
+                      {renderFormattedInline(c.profile.bio)}
+                    </p>
+                  ) : null}
                 </div>
               </div>
               <Link href="/blog" className="mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-fg transition-colors hover:bg-fg/5">

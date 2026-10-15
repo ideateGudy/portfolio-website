@@ -131,7 +131,18 @@ function SettingsClient() {
           value={avatarUrl}
           onUploaded={setAvatarUrl}
         />
-        <Textarea label="Short bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} />
+        <div className="flex flex-col gap-1.5">
+          <Textarea
+            label="Short bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            rows={2}
+            placeholder="e.g. Full-Stack Engineer: Building [@stacklenzz](https://stacklenzz.vercel.app/) | [@Littlelyst](https://littlelyst.com)"
+          />
+          <span className="text-xs text-muted">
+            Supports external links using markdown <code className="font-mono text-accent">[@name](https://example.com)</code> or HTML <code className="font-mono text-accent">&lt;a href="..."&gt;@name&lt;/a&gt;</code>, plus bold (<code className="font-mono text-accent">**text**</code>).
+          </span>
+        </div>
         <Input label="Contact email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </section>
 

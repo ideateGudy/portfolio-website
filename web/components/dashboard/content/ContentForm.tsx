@@ -64,7 +64,18 @@ export function ContentForm({
           <Input label="Name" value={v.name ?? ''} onChange={(e) => set({ name: e.target.value })} />
           <Input label="Role" value={v.role ?? ''} onChange={(e) => set({ role: e.target.value })} />
           <Input label="Avatar URL" value={v.avatarUrl ?? ''} onChange={(e) => set({ avatarUrl: e.target.value })} />
-          <Textarea label="Bio" value={v.bio ?? ''} onChange={(e) => set({ bio: e.target.value })} rows={3} />
+          <div className="flex flex-col gap-1.5">
+            <Textarea
+              label="Bio"
+              value={v.bio ?? ''}
+              onChange={(e) => set({ bio: e.target.value })}
+              rows={3}
+              placeholder="e.g. Full-Stack Engineer: Building [@stacklenzz](https://stacklenzz.vercel.app/) | [@Littlelyst](https://littlelyst.com)"
+            />
+            <span className="text-xs text-muted">
+              Supports external links using markdown <code className="font-mono text-accent">[@name](https://example.com)</code> or HTML <code className="font-mono text-accent">&lt;a href="..."&gt;@name&lt;/a&gt;</code>, plus bold (<code className="font-mono text-accent">**text**</code>).
+            </span>
+          </div>
         </div>
       );
     }
