@@ -24,7 +24,6 @@ export function CommentsSection({ slug }: { slug: string }) {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
     void postInteractionsApi
       .listComments(slug)
       .then((items) => {
@@ -261,7 +260,7 @@ export function CommentsSection({ slug }: { slug: string }) {
                   </div>
                 </div>
 
-                <p className="text-sm text-fg whitespace-pre-wrap leading-relaxed break-words">
+                <p className="text-sm text-fg whitespace-pre-wrap leading-relaxed wrap-break-word">
                   {comment.content}
                 </p>
 
@@ -333,7 +332,7 @@ export function CommentsSection({ slug }: { slug: string }) {
                             <span>{reply.likesCount}</span>
                           </button>
                         </div>
-                        <p className="text-xs text-fg whitespace-pre-wrap leading-relaxed break-words">
+                        <p className="text-xs text-fg whitespace-pre-wrap leading-relaxed wrap-break-word">
                           {reply.content}
                         </p>
                       </div>
