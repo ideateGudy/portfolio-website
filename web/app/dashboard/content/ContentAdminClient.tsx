@@ -8,6 +8,7 @@ import { ContentForm } from '@/components/dashboard/content/ContentForm';
 import {
   fallbackAbout,
   fallbackContact,
+  fallbackEducation,
   fallbackExperience,
   fallbackHero,
   fallbackProjectsHeader,
@@ -23,6 +24,7 @@ const KEYS = [
   'about',
   'services',
   'experience',
+  'education',
   'projects',
   'techStack',
   'contact',
@@ -39,6 +41,7 @@ const LABELS: Record<Key, string> = {
   about: 'About',
   services: 'Services',
   experience: 'Experience',
+  education: 'Education',
   projects: 'Projects heading',
   techStack: 'Tech stack',
   contact: 'Contact',
@@ -61,6 +64,8 @@ function fallbackFor(key: Key): Record<string, unknown> {
       return fallbackServices as unknown as Record<string, unknown>;
     case 'experience':
       return fallbackExperience as unknown as Record<string, unknown>;
+    case 'education':
+      return fallbackEducation as unknown as Record<string, unknown>;
     case 'projects':
       return fallbackProjectsHeader as unknown as Record<string, unknown>;
     case 'contact':

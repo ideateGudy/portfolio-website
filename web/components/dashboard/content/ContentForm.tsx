@@ -6,6 +6,8 @@ import { ChipsInput, KeyValueEditor, ListControls, moveItem } from './editors';
 import type {
   AboutContent,
   ContactContent,
+  EducationContent,
+  EducationItem,
   ExperienceContent,
   ExperienceItem,
   HeroContent,
@@ -43,6 +45,8 @@ export function ContentForm({
       return <ServicesForm v={value as unknown as ServicesContent} set={set} />;
     case 'experience':
       return <ExperienceForm v={value as unknown as ExperienceContent} set={set} />;
+    case 'education':
+      return <EducationForm v={value as unknown as EducationContent} set={set} />;
     case 'projects': {
       const v = value as unknown as ProjectsHeader;
       return (
@@ -322,6 +326,76 @@ function ExperienceForm({ v, set }: { v: ExperienceContent; set: Setter }) {
                 value={it.skills ?? []}
                 onChange={(skills) => patchItem(i, { skills })}
                 placeholder="Add a skill"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function EducationForm({ v, set }: { v: EducationContent; set: Setter }) {
+  const items = v.items ?? [];
+  const patchItem = (i: number, patch: Partial<EducationItem>) =>
+    set({ items: items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)) });
+  return (
+    <div className="flex flex-col gap-5">
+      <Input label="Title" value={v.title ?? ''} onChange={(e) => set({ title: e.target.value })} />
+      <Input label="Subtitle" value={v.subtitle ?? ''} onChange={(e) => set({ subtitle: e.target.value })} />
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-fg">Schools & Credentials ({items.length})</span>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() =>
+            set({
+              items: [
+                ...items,
+                {
+                  school: '',
+                  degree: '',
+                  fieldOfStudy: '',
+                  duration: '',
+                  grade: '',
+                  activities: '',
+                  description: '',
+                  credentialUrl: '',
+                  skills: [],
+                },
+              ],
+            })
+          }
+        >
+          Add education
+        </Button>
+      </div>
+      {items.map((it, i) => (
+        <div key={i} className="flex gap-3 rounded-xl border border-line p-4">
+          <ListControls
+            index={i}
+            count={items.length}
+            onMove={(dir) => set({ items: moveItem(items, i, dir) })}
+            onRemove={() => set({ items: items.filter((_, idx) => idx !== i) })}
+          />
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Input label="School / Institution" placeholder="e.g. AltSchool Africa" value={it.school ?? ''} onChange={(e) => patchItem(i, { school: e.target.value })} />
+              <Input label="Degree / Qualification" placeholder="e.g. Diploma, Cloud Engineering" value={it.degree ?? ''} onChange={(e) => patchItem(i, { degree: e.target.value })} />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Input label="Dates / Duration" placeholder="e.g. 2023 - 2024" value={it.duration ?? ''} onChange={(e) => patchItem(i, { duration: e.target.value })} />
+              <Input label="Grade" placeholder="e.g. Second Class (Upper Division)" value={it.grade ?? ''} onChange={(e) => patchItem(i, { grade: e.target.value })} />
+              <Input label="Credential / Certificate URL" placeholder="https://..." value={it.credentialUrl ?? ''} onChange={(e) => patchItem(i, { credentialUrl: e.target.value })} />
+            </div>
+            <Input label="Activities and societies" placeholder="e.g. NACOS & NASS" value={it.activities ?? ''} onChange={(e) => patchItem(i, { activities: e.target.value })} />
+            <Textarea label="Description / Highlights" value={it.description ?? ''} onChange={(e) => patchItem(i, { description: e.target.value })} rows={2} />
+            <div className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-fg">Skills & Subjects</span>
+              <ChipsInput
+                value={it.skills ?? []}
+                onChange={(skills) => patchItem(i, { skills })}
+                placeholder="Add a skill (e.g. AWS, OOP, CI/CD)"
               />
             </div>
           </div>

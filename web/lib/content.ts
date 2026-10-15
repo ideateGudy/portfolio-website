@@ -28,6 +28,20 @@ export type ExperienceItem = {
   skills?: string[];
 };
 export type ExperienceContent = { title: string; subtitle: string; items: ExperienceItem[] };
+
+export type EducationItem = {
+  school: string;
+  degree: string;
+  fieldOfStudy?: string;
+  duration?: string;
+  grade?: string;
+  activities?: string;
+  description?: string;
+  credentialUrl?: string;
+  skills?: string[];
+};
+export type EducationContent = { title: string; subtitle: string; items: EducationItem[] };
+
 export type ProjectsHeader = {
   title: string; subtitle: string; sectionTitle: string; sectionSubtitle: string;
 };
@@ -181,6 +195,29 @@ export const fallbackExperience: ExperienceContent = {
   ],
 };
 
+export const fallbackEducation: EducationContent = {
+  title: 'Education',
+  subtitle: 'Academic background & certifications.',
+  items: [
+    {
+      school: 'AltSchool Africa',
+      degree: 'Diploma, Cloud Engineering',
+      fieldOfStudy: 'Cloud Engineering',
+      duration: '2023 - 2024',
+      skills: ['CI/CD', 'Amazon Web Services (AWS)', 'Docker', 'Linux', 'Terraform', 'Kubernetes'],
+    },
+    {
+      school: 'Delta State University, Nigeria',
+      degree: 'Bachelor of Science - BS, Computer Science',
+      fieldOfStudy: 'Computer Science',
+      duration: '2018 - 2023',
+      grade: 'Second Class (Upper Division)',
+      activities: 'NACOS & NASS',
+      skills: ['Object-Oriented Programming (OOP)', 'Compiler Construction', 'Data Structures & Algorithms', 'Database Systems', 'Software Engineering'],
+    },
+  ],
+};
+
 export const fallbackProjectsHeader: ProjectsHeader = {
   title: 'Selected work', subtitle: 'Projects',
   sectionTitle: 'A small selection of recent projects',
@@ -224,6 +261,7 @@ export function parseContent(all: Record<string, unknown> | null) {
     about: obj(c.about, fallbackAbout),
     services: obj(c.services, fallbackServices),
     experience: obj(c.experience, fallbackExperience),
+    education: obj(c.education, fallbackEducation),
     projectsHeader: obj(c.projects, fallbackProjectsHeader),
     contact: obj(c.contact, fallbackContact),
     profile: obj(c.profile, fallbackProfile),

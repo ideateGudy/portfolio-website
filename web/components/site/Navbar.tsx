@@ -21,6 +21,7 @@ export function Navbar({ name, resumeUrl }: { name: string; resumeUrl: string })
     { label: 'Projects', href: '#projects' },
     { label: 'Services', href: '#services' },
     { label: 'Experience', href: '#experience' },
+    { label: 'Education', href: '#education' },
     { label: 'Writing', href: '#writing' },
     { label: 'Contact', href: '#contact' },
   ];

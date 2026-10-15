@@ -7,6 +7,7 @@ import { About } from '@/components/site/About';
 import { Projects } from '@/components/site/Projects';
 import { Services } from '@/components/site/Services';
 import { Experience } from '@/components/site/Experience';
+import { Education } from '@/components/site/Education';
 import { Writing } from '@/components/site/Writing';
 import { Contact } from '@/components/site/Contact';
 import { ContactModal } from '@/components/site/ContactModal';
@@ -88,6 +89,7 @@ async function HomeContent() {
         <Projects header={c.projectsHeader} projects={projects ?? []} />
         <Services services={c.services} />
         <Experience experience={c.experience} />
+        <Education education={c.education} />
         <Writing posts={latest?.items ?? []} profile={c.profile} />
         <Contact contact={c.contact} socials={c.socials} resumeUrl={c.resumeUrl} />
       </main>
