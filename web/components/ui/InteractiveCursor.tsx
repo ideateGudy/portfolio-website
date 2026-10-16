@@ -1,8 +1,33 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useSyncExternalStore } from 'react';
 
 type SectionKind = 'hero' | 'about' | 'projects' | 'services' | 'experience' | 'education' | 'writing' | 'contact' | 'default';
+
+function subscribePointerMedia(callback: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  const fineMedia = window.matchMedia('(pointer: fine)');
+  const motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  fineMedia.addEventListener('change', callback);
+  motionMedia.addEventListener('change', callback);
+
+  return () => {
+    fineMedia.removeEventListener('change', callback);
+    motionMedia.removeEventListener('change', callback);
+  };
+}
+
+function getPointerSnapshot(): boolean {
+  if (typeof window === 'undefined') return false;
+  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return hasFinePointer && !prefersReducedMotion;
+}
+
+function getPointerServerSnapshot(): boolean {
+  return false;
+}
 
 interface SectionConfig {
   badge: string;
@@ -86,7 +111,12 @@ const SECTION_CONFIGS: Record<SectionKind, SectionConfig> = {
  * - Automatically respects touch devices and prefers-reduced-motion
  */
 export function InteractiveCursor() {
-  const [enabled, setEnabled] = useState(false);
+  const enabled = useSyncExternalStore(
+    subscribePointerMedia,
+    getPointerSnapshot,
+    getPointerServerSnapshot,
+  );
+
   const [visible, setVisible] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
@@ -104,18 +134,11 @@ export function InteractiveCursor() {
   const animFrameId = useRef<number | null>(null);
 
   useEffect(() => {
-    // Check for fine pointer (mouse)
-    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!hasFinePointer || prefersReducedMotion) {
-      return;
-    }
-
-    setEnabled(true);
+    if (!enabled) return;
 
     const onMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
-      if (!visible) setVisible(true);
+      setVisible((v) => (v ? v : true));
 
       // Move inner point immediately without lag for pinpoint precision
       if (dotRef.current) {
@@ -191,7 +214,7 @@ export function InteractiveCursor() {
       document.removeEventListener('mouseenter', onMouseEnter);
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
     };
-  }, [visible]);
+  }, [enabled]);
 
   if (!enabled) return null;
 
@@ -201,7 +224,7 @@ export function InteractiveCursor() {
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none fixed inset-0 z-[9999] overflow-hidden transition-opacity duration-300 ${
+      className={`pointer-events-none fixed inset-0 z-9999 overflow-hidden transition-opacity duration-300 ${
         visible ? 'opacity-100' : 'opacity-0'
       }`}
     >
