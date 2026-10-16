@@ -13,7 +13,7 @@ export function Hero({ hero, profile, socials, resumeUrl }: Props) {
   const avatar = cld(profile.avatarUrl, 192);
   const showResume = resumeUrl || hero.secondaryCta.href;
   return (
-    <section aria-label="Introduction" className="mx-auto max-w-6xl px-4 pt-14 pb-10 sm:px-6 lg:pt-20">
+    <section id="hero" data-cursor="hero" aria-label="Introduction" className="mx-auto max-w-6xl px-4 pt-14 pb-10 sm:px-6 lg:pt-20">
       <div className="grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
         <div>
           <Reveal>

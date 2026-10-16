@@ -83,7 +83,7 @@ export function Experience({ experience }: { experience: ExperienceContent }) {
   const companyGroups = groupExperienceByCompany(experience.items);
 
   return (
-    <section id="experience" aria-label="Experience" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="experience" data-cursor="experience" aria-label="Experience" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader index="04" label={experience.title} title={experience.subtitle} />
       </Reveal>

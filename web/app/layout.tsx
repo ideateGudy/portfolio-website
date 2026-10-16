@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ToastViewport } from "@/components/ui/Toast";
+import { InteractiveCursor } from "@/components/ui/InteractiveCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MotionProvider>
           {children}
           <ToastViewport />
+          <InteractiveCursor />
         </MotionProvider>
       </body>
     </html>

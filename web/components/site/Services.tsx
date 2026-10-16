@@ -23,7 +23,7 @@ export function Services({ services }: { services: ServicesContent }) {
   const openContactModal = useUIStore((s) => s.openContactModal);
 
   return (
-    <section id="services" aria-label="Services" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="services" data-cursor="services" aria-label="Services" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader
           index="03"

@@ -15,7 +15,7 @@ export function Education({ education }: { education: EducationContent }) {
   if (!education.items || education.items.length === 0) return null;
 
   return (
-    <section id="education" aria-label="Education" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="education" data-cursor="education" aria-label="Education" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader index="05" label={education.title} title={education.subtitle} />
       </Reveal>

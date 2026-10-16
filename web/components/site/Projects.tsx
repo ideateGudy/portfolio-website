@@ -10,7 +10,7 @@ import type { ProjectsHeader } from '@/lib/content';
 /** Project card: cover → index → title → description → tech → links (design §7.4). */
 export function Projects({ header, projects }: { header: ProjectsHeader; projects: Project[] }) {
   return (
-    <section id="projects" aria-label="Projects" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="projects" data-cursor="projects" aria-label="Projects" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader index="02" label={header.subtitle} title={header.sectionTitle} subtitle={header.sectionSubtitle} />
       </Reveal>

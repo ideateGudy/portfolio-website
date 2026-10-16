@@ -7,7 +7,7 @@ import type { AboutContent } from '@/lib/content';
 
 export function About({ about, techStack }: { about: AboutContent; techStack: string[] }) {
   return (
-    <section id="about" aria-label="About" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="about" data-cursor="about" aria-label="About" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader index="01" label={about.title} title={about.subtitle} />
       </Reveal>

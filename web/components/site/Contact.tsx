@@ -23,7 +23,7 @@ export function Contact({ contact, socials, resumeUrl }: Props) {
   };
 
   return (
-    <section id="contact" aria-label="Contact" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="contact" data-cursor="contact" aria-label="Contact" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader index="07" label={contact.subtitle} title={contact.heading} subtitle={contact.sectionSubtitle} />
       </Reveal>

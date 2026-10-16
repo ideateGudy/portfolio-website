@@ -13,7 +13,7 @@ type Props = { posts: PostListItem[]; profile: ProfileContent };
 export function Writing({ posts, profile }: Props) {
   const avatar = cld(profile.avatarUrl, 48);
   return (
-    <section id="writing" aria-label="Writing" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <section id="writing" data-cursor="writing" aria-label="Writing" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader index="06" label="Writing" title="Technical articles" subtitle="Notes on backend, DevOps, cloud and fullstack engineering." />
       </Reveal>
