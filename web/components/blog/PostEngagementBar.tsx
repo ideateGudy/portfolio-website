@@ -3,10 +3,20 @@
 import { useEffect, useState } from 'react';
 import { EyeIcon, HeartIcon, MessageSquareIcon } from '@/components/ui/icons';
 import { postInteractionsApi, type PostInteractions } from '@/lib/interactions-api';
+import { useAuthStore } from '@/store/auth';
 
 export function PostEngagementBar({ slug }: { slug: string }) {
+  const { user, status, fetchMe } = useAuthStore();
+  const isAuthenticatedAuthor = status === 'authenticated' && !!user;
+
   const [data, setData] = useState<PostInteractions | null>(null);
   const [liking, setLiking] = useState(false);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      void fetchMe();
+    }
+  }, [status, fetchMe]);
 
   useEffect(() => {
     let active = true;
@@ -66,13 +76,17 @@ export function PostEngagementBar({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-3 py-3 border-y border-line text-xs font-mono text-muted">
-      <div className="flex items-center gap-1.5" title="Unique readers">
-        <EyeIcon size={15} className="text-accent" />
-        <span className="font-semibold text-fg">{data ? data.viewsCount : '—'}</span>
-        <span>views</span>
-      </div>
-
-      <span className="text-line">·</span>
+      {/* View count: only visible to the authenticated author/admin */}
+      {isAuthenticatedAuthor && (
+        <>
+          <div className="flex items-center gap-1.5" title="Unique readers (Author only)">
+            <EyeIcon size={15} className="text-accent" />
+            <span className="font-semibold text-fg">{data ? data.viewsCount : '—'}</span>
+            <span>views</span>
+          </div>
+          <span className="text-line">·</span>
+        </>
+      )}
 
       <button
         type="button"
