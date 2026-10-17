@@ -135,3 +135,19 @@ model SiteContent {
   value     Json
   updatedAt DateTime @updatedAt
 }
+
+model ActivityEvent {
+  id        String   @id @default(cuid())
+  type      String   // PAGE_VIEW | RESUME_CLICK | PROJECT_CLICK | CONTACT_CLICK | SOCIAL_CLICK | LIKE | COMMENT
+  path      String   // e.g. "/", "/blog", "/blog/slug", "#contact"
+  entityId  String?  // post ID, project ID, social name, etc.
+  metadata  Json?    // extra details: { title, targetUrl, referrer, device, browser }
+  visitorId String
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([visitorId, createdAt])
+  @@index([path])
+  @@index([createdAt])
+}
+

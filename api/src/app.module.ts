@@ -10,6 +10,7 @@ import { PostsModule } from './posts/posts.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { ContentModule } from './content/content.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
+import { AnalyticsModule } from './analytics/analytics.module.js';
 import { HealthController } from './health.controller.js';
 
 @Module({
@@ -41,6 +42,7 @@ import { HealthController } from './health.controller.js';
     ProjectsModule,
     ContentModule,
     UploadsModule,
+    AnalyticsModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
