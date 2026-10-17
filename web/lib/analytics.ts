@@ -64,3 +64,4 @@ export function trackActivity(params: TrackEventParams): void {
     // Analytics failures must never break the user experience
   }
 }
+
