@@ -47,12 +47,12 @@ export function Projects({ header, projects }: { header: ProjectsHeader; project
                       ) : null}
                       <div className="mt-4 flex flex-wrap gap-4 border-t border-line pt-4 text-sm font-medium">
                         {p.liveUrl ? (
-                          <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
+                          <a href={p.liveUrl} data-analytics="project" data-project-id={p.id} data-project-title={p.title} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
                             Live site <ArrowUpRightIcon size={16} />
                           </a>
                         ) : null}
                         {p.repoUrl ? (
-                          <a href={p.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
+                          <a href={p.repoUrl} data-analytics="project" data-project-id={p.id} data-project-title={p.title} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
                             Code <ArrowUpRightIcon size={16} />
                           </a>
                         ) : null}

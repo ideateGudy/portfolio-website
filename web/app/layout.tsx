@@ -4,6 +4,7 @@ import "./globals.css";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ToastViewport } from "@/components/ui/Toast";
 import { InteractiveCursor } from "@/components/ui/InteractiveCursor";
+import { AnalyticsTracker } from "@/components/analytics/AnalyticsTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -88,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <ToastViewport />
           <InteractiveCursor />
+          <AnalyticsTracker />
         </MotionProvider>
       </body>
     </html>

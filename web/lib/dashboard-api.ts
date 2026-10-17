@@ -160,6 +160,9 @@ export const adminApi = {
         return r;
       }),
   },
+  analytics: {
+    getOverview: (days = 30) => req<AnalyticsOverview>(`/analytics/overview?days=${days}`),
+  },
   upload: async (file: File, folder: string) => {
     const form = new FormData();
     form.append('folder', folder); // must precede the file part (see API note)
@@ -172,4 +175,30 @@ export const adminApi = {
     if (!res.ok) throw new Error((data as { message?: string })?.message ?? 'Upload failed');
     return data as { url: string; publicId: string; width: number; height: number };
   },
+};
+
+export type AnalyticsOverview = {
+  summary: {
+    totalEvents: number;
+    pageViews: number;
+    uniqueVisitors: number;
+    resumeClicks: number;
+  };
+  eventsByType: { type: string; count: number }[];
+  eventsByPath: { path: string; count: number }[];
+  timeline: {
+    date: string;
+    views: number;
+    actions: number;
+    visitors: number;
+  }[];
+  recentFeed: {
+    id: string;
+    type: string;
+    path: string;
+    entityId: string | null;
+    metadata: Record<string, unknown> | null;
+    visitorId: string;
+    createdAt: string;
+  }[];
 };

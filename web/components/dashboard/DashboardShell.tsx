@@ -19,6 +19,7 @@ import {
   ProjectsIcon,
   ContentIcon,
   MessageSquareIcon,
+  ActivityIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@/components/ui/icons';
@@ -26,6 +27,7 @@ import { adminApi } from '@/lib/dashboard-api';
 import { cld } from '@/lib/format';
 
 const NAV = [
+  { href: '/dashboard/analytics', label: 'Analytics', icon: ActivityIcon },
   { href: '/dashboard/posts', label: 'Posts', icon: PostsIcon },
   { href: '/dashboard/comments', label: 'Comments', icon: MessageSquareIcon },
   { href: '/dashboard/projects', label: 'Projects', icon: ProjectsIcon },

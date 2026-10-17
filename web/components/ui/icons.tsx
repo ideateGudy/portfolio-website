@@ -277,3 +277,31 @@ export function MessageSquareIcon({ className, size }: Props) {
   );
 }
 
+export function BarChartIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <line x1="12" y1="20" x2="12" y2="10" />
+      <line x1="18" y1="20" x2="18" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="16" />
+    </svg>
+  );
+}
+
+export function ActivityIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  );
+}
+
+export function SparkIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+    </svg>
+  );
+}
+
+
+

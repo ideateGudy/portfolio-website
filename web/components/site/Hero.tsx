@@ -32,11 +32,11 @@ export function Hero({ hero, profile, socials, resumeUrl }: Props) {
           </Reveal>
           <Reveal delay={0.24}>
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a href={hero.primaryCta.href || '#projects'} className="inline-flex h-11 items-center rounded-full bg-accent px-5 font-medium text-accent-fg transition hover:brightness-[1.08]">
+              <a href={hero.primaryCta.href || '#projects'} data-analytics="projects" className="inline-flex h-11 items-center rounded-full bg-accent px-5 font-medium text-accent-fg transition hover:brightness-[1.08]">
                 {hero.primaryCta.label || 'Show my work'}
               </a>
               {showResume ? (
-                <a href={resumeUrl || hero.secondaryCta.href} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center rounded-full border border-line px-5 font-medium text-fg transition-colors hover:bg-fg/5">
+                <a href={resumeUrl || hero.secondaryCta.href} data-analytics="resume" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center rounded-full border border-line px-5 font-medium text-fg transition-colors hover:bg-fg/5">
                   {hero.secondaryCta.label || 'View Resume'}
                 </a>
               ) : null}
