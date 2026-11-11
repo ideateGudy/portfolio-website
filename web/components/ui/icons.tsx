@@ -303,5 +303,34 @@ export function SparkIcon({ className, size }: Props) {
   );
 }
 
+export function GlobeIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+export function LaptopIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <rect x="3" y="4" width="18" height="12" rx="2" />
+      <line x1="2" y1="20" x2="22" y2="20" />
+    </svg>
+  );
+}
+
+export function SmartphoneIcon({ className, size }: Props) {
+  return (
+    <svg {...base(className, size)}>
+      <rect x="5" y="2" width="14" height="20" rx="2" />
+      <line x1="12" y1="18" x2="12.01" y2="18" />
+    </svg>
+  );
+}
+
+
 
 

@@ -186,6 +186,9 @@ export type AnalyticsOverview = {
   };
   eventsByType: { type: string; count: number }[];
   eventsByPath: { path: string; count: number }[];
+  browsers?: { name: string; count: number }[];
+  devices?: { name: string; count: number }[];
+  operatingSystems?: { name: string; count: number }[];
   timeline: {
     date: string;
     views: number;

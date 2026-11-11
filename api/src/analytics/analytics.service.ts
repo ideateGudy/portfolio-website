@@ -100,6 +100,43 @@ export class AnalyticsService {
       dailyMap.set(dateKey, entry);
     }
 
+    // Breakdown browser and device distributions from metadata
+    const browserCounts: Record<string, number> = {};
+    const deviceCounts: Record<string, number> = {};
+    const osCounts: Record<string, number> = {};
+
+    const recentWithMetadata = await this.prisma.activityEvent.findMany({
+      where: { createdAt: { gte: since } },
+      select: { metadata: true },
+      take: 500,
+    });
+
+    for (const row of recentWithMetadata) {
+      if (row.metadata && typeof row.metadata === 'object') {
+        const meta = row.metadata as Record<string, unknown>;
+        const b = typeof meta.browser === 'string' && meta.browser ? meta.browser : null;
+        if (b) browserCounts[b] = (browserCounts[b] || 0) + 1;
+
+        const dev = typeof meta.device === 'string' && meta.device ? meta.device : null;
+        if (dev) deviceCounts[dev] = (deviceCounts[dev] || 0) + 1;
+
+        const o = typeof meta.os === 'string' && meta.os ? meta.os : null;
+        if (o) osCounts[o] = (osCounts[o] || 0) + 1;
+      }
+    }
+
+    const browserBreakdown = Object.entries(browserCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const deviceBreakdown = Object.entries(deviceCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const osBreakdown = Object.entries(osCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
     const timeline = Array.from(dailyMap.values()).map((e) => ({
       date: e.date,
       views: e.views,
@@ -116,6 +153,9 @@ export class AnalyticsService {
       },
       eventsByType: eventsByType.map((t) => ({ type: t.type, count: t._count.id })),
       eventsByPath: eventsByPath.map((p) => ({ path: p.path, count: p._count.id })),
+      browsers: browserBreakdown,
+      devices: deviceBreakdown,
+      operatingSystems: osBreakdown,
       timeline,
       recentFeed: recentEvents.map((r) => ({
         id: r.id,
