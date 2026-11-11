@@ -13,6 +13,7 @@ import type {
   HeroContent,
   ProjectsHeader,
   ProfileContent,
+  SectionVisibility,
   ServiceItem,
   ServicesContent,
   SocialsContent,
@@ -35,6 +36,8 @@ export function ContentForm({
   const set = (patch: Record<string, unknown>) => onChange({ ...value, ...patch });
 
   switch (section) {
+    case 'sectionVisibility':
+      return <SectionVisibilityForm v={value as unknown as SectionVisibility} set={set} />;
     case 'hero':
       return <HeroForm v={value as unknown as HeroContent} set={set} />;
     case 'about':
@@ -412,6 +415,67 @@ function EducationForm({ v, set }: { v: EducationContent; set: Setter }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+const SECTION_OPTIONS: { key: keyof SectionVisibility; label: string; defaultNum: string; desc: string }[] = [
+  { key: 'about', label: 'About', defaultNum: '01', desc: 'Personal statement, bio, quick facts & principles' },
+  { key: 'projects', label: 'Projects', defaultNum: '02', desc: 'Featured works and project showcase cards' },
+  { key: 'services', label: 'What I offer (Services)', defaultNum: '03', desc: 'Services & capability tracks (e.g. 03 · What I offer)' },
+  { key: 'experience', label: 'Experience', defaultNum: '04', desc: 'Work history and role timeline' },
+  { key: 'education', label: 'Education', defaultNum: '05', desc: 'Academic background & certifications' },
+  { key: 'writing', label: 'Writing / Blog', defaultNum: '06', desc: 'Recent technical articles preview' },
+  { key: 'contact', label: 'Contact', defaultNum: '07', desc: 'Get in touch & consultation inquiry card' },
+];
+
+function SectionVisibilityForm({
+  v,
+  set,
+}: {
+  v: SectionVisibility;
+  set: (patch: Record<string, unknown>) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-xl border border-line/60 bg-fg/[0.02] p-4 text-xs leading-relaxed text-muted">
+        <p className="font-medium text-fg">Dynamic Section Numbering:</p>
+        <p className="mt-1">
+          Hiding any section automatically removes it from the public portfolio page and navbar.
+          The remaining sections will seamlessly re-adjust their numbers (e.g., hiding <strong>03 · What I offer</strong> shifts <strong>04 · Experience</strong> to become <strong>03</strong>).
+        </p>
+      </div>
+
+      <div className="flex flex-col divide-y divide-line rounded-xl border border-line">
+        {SECTION_OPTIONS.map((item) => {
+          const isVisible = v[item.key] ?? true;
+          return (
+            <label
+              key={item.key}
+              className="flex items-center justify-between gap-4 p-4 transition-colors hover:bg-fg/[0.02] cursor-pointer"
+            >
+              <div className="flex flex-col gap-0.5">
+                <span className="flex items-center gap-2 text-sm font-medium text-fg">
+                  <span className="font-mono text-xs text-accent">[{item.defaultNum}]</span>
+                  {item.label}
+                  {!isVisible && (
+                    <span className="rounded bg-red-500/10 px-1.5 py-0.5 text-[11px] font-medium text-red-500 dark:text-red-400">
+                      Hidden
+                    </span>
+                  )}
+                </span>
+                <span className="text-xs text-muted">{item.desc}</span>
+              </div>
+              <input
+                type="checkbox"
+                checked={isVisible}
+                onChange={(e) => set({ [item.key]: e.target.checked })}
+                className="h-4 w-4 rounded border-line text-accent accent-accent focus:ring-accent"
+              />
+            </label>
+          );
+        })}
+      </div>
     </div>
   );
 }

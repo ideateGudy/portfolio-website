@@ -7,10 +7,10 @@ import { CopyIcon, MailIcon } from '@/components/ui/icons';
 import { useUIStore } from '@/store/ui';
 import type { ContactContent, SocialsContent } from '@/lib/content';
 
-type Props = { contact: ContactContent; socials: SocialsContent; resumeUrl: string };
+type Props = { contact: ContactContent; socials: SocialsContent; resumeUrl: string; index?: string };
 
 /** Contact block: mailto + copy-email toast, socials, resume (PRD §5.1). */
-export function Contact({ contact, socials, resumeUrl }: Props) {
+export function Contact({ contact, socials, resumeUrl, index = '07' }: Props) {
   const toast = useUIStore((s) => s.toast);
 
   const copyEmail = async () => {
@@ -25,7 +25,7 @@ export function Contact({ contact, socials, resumeUrl }: Props) {
   return (
     <section id="contact" data-cursor="contact" aria-label="Contact" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="07" label={contact.subtitle} title={contact.heading} subtitle={contact.sectionSubtitle} />
+        <SectionHeader index={index} label={contact.subtitle} title={contact.heading} subtitle={contact.sectionSubtitle} />
       </Reveal>
       <Reveal delay={0.08}>
         <div className="glass mt-8 p-6 sm:p-10">

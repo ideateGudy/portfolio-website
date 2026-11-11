@@ -79,13 +79,19 @@ function groupExperienceByCompany(items: ExperienceItem[]): CompanyGroup[] {
  * - Clean bullet point formatting for achievements
  * - Skills chips per role
  */
-export function Experience({ experience }: { experience: ExperienceContent }) {
+export function Experience({
+  experience,
+  index = '04',
+}: {
+  experience: ExperienceContent;
+  index?: string;
+}) {
   const companyGroups = groupExperienceByCompany(experience.items);
 
   return (
     <section id="experience" data-cursor="experience" aria-label="Experience" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="04" label={experience.title} title={experience.subtitle} />
+        <SectionHeader index={index} label={experience.title} title={experience.subtitle} />
       </Reveal>
 
       <ol className="relative mt-8 flex flex-col gap-8 border-l border-line pl-6 sm:pl-8">

@@ -5,8 +5,18 @@ import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { CloseIcon, MenuIcon } from '@/components/ui/icons';
 
+import type { SectionVisibility } from '@/lib/content';
+
 /** Sticky glass navbar (design §7.1). No login link on the portfolio page. */
-export function Navbar({ name, resumeUrl }: { name: string; resumeUrl: string }) {
+export function Navbar({
+  name,
+  resumeUrl,
+  visibility,
+}: {
+  name: string;
+  resumeUrl: string;
+  visibility?: SectionVisibility;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const initials = name
     .split(' ')
@@ -16,15 +26,17 @@ export function Navbar({ name, resumeUrl }: { name: string; resumeUrl: string })
     .join('')
     .toUpperCase();
 
-  const links = [
-    { label: 'About', href: '#about' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Services', href: '#services' },
-    { label: 'Experience', href: '#experience' },
-    { label: 'Education', href: '#education' },
-    { label: 'Writing', href: '#writing' },
-    { label: 'Contact', href: '#contact' },
-  ];
+  const allLinks = [
+    { key: 'about', label: 'About', href: '#about' },
+    { key: 'projects', label: 'Projects', href: '#projects' },
+    { key: 'services', label: 'Services', href: '#services' },
+    { key: 'experience', label: 'Experience', href: '#experience' },
+    { key: 'education', label: 'Education', href: '#education' },
+    { key: 'writing', label: 'Writing', href: '#writing' },
+    { key: 'contact', label: 'Contact', href: '#contact' },
+  ] as const;
+
+  const links = allLinks.filter((l) => visibility?.[l.key] ?? true);
 
   return (
     <header className="glass navbar-shell sticky top-0 z-40">

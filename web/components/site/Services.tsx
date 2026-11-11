@@ -19,14 +19,20 @@ const trackIcons: Record<string, React.ComponentType<{ size?: number; className?
  * - Key competencies & deliverables
  * - One-click "Get in touch" modal launcher
  */
-export function Services({ services }: { services: ServicesContent }) {
+export function Services({
+  services,
+  index = '03',
+}: {
+  services: ServicesContent;
+  index?: string;
+}) {
   const openContactModal = useUIStore((s) => s.openContactModal);
 
   return (
     <section id="services" data-cursor="services" aria-label="Services" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
         <SectionHeader
-          index="03"
+          index={index}
           label={services.subtitle}
           title={services.sectionTitle}
           subtitle={services.sectionSubtitle}

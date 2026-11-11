@@ -8,11 +8,19 @@ import type { Project } from '@/lib/api';
 import type { ProjectsHeader } from '@/lib/content';
 
 /** Project card: cover → index → title → description → tech → links (design §7.4). */
-export function Projects({ header, projects }: { header: ProjectsHeader; projects: Project[] }) {
+export function Projects({
+  header,
+  projects,
+  index = '02',
+}: {
+  header: ProjectsHeader;
+  projects: Project[];
+  index?: string;
+}) {
   return (
     <section id="projects" data-cursor="projects" aria-label="Projects" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="02" label={header.subtitle} title={header.sectionTitle} subtitle={header.sectionSubtitle} />
+        <SectionHeader index={index} label={header.subtitle} title={header.sectionTitle} subtitle={header.sectionSubtitle} />
       </Reveal>
       {projects.length === 0 ? (
         <p className="mt-8 text-muted">Projects are being updated — check back soon.</p>

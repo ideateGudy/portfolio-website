@@ -11,13 +11,19 @@ import type { EducationContent } from '@/lib/content';
  * - Key associated skills tags
  * - External link to credential/certificate if available
  */
-export function Education({ education }: { education: EducationContent }) {
+export function Education({
+  education,
+  index = '05',
+}: {
+  education: EducationContent;
+  index?: string;
+}) {
   if (!education.items || education.items.length === 0) return null;
 
   return (
     <section id="education" data-cursor="education" aria-label="Education" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="05" label={education.title} title={education.subtitle} />
+        <SectionHeader index={index} label={education.title} title={education.subtitle} />
       </Reveal>
 
       <ol className="relative mt-8 flex flex-col gap-6 border-l border-line pl-6 sm:pl-8">

@@ -13,13 +13,16 @@ import {
   fallbackHero,
   fallbackProjectsHeader,
   fallbackProfile,
+  fallbackSectionVisibility,
   fallbackServices,
   fallbackSocials,
+  type SectionVisibility,
 } from '@/lib/content';
 
 // Editable blocks. `techStack` and `footer` use the fallback text of "" so a
 // fresh section opens with sensible, editable values.
 const KEYS = [
+  'sectionVisibility',
   'hero',
   'about',
   'services',
@@ -37,6 +40,7 @@ const KEYS = [
 type Key = (typeof KEYS)[number];
 
 const LABELS: Record<Key, string> = {
+  sectionVisibility: 'Section visibility (show / hide)',
   hero: 'Hero',
   about: 'About',
   services: 'Services',
@@ -56,6 +60,8 @@ const LABELS: Record<Key, string> = {
 // even before the DB row exists.
 function fallbackFor(key: Key): Record<string, unknown> {
   switch (key) {
+    case 'sectionVisibility':
+      return fallbackSectionVisibility as unknown as Record<string, unknown>;
     case 'hero':
       return fallbackHero as unknown as Record<string, unknown>;
     case 'about':

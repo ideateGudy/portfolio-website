@@ -78,20 +78,33 @@ async function HomeContent() {
     url: siteUrl,
   };
 
+  const vis = c.sectionVisibility;
+
+  // Compute dynamic 2-digit indices for visible sections so numbering stays contiguous
+  const sectionKeys = ['about', 'projects', 'services', 'experience', 'education', 'writing', 'contact'] as const;
+  const indices: Record<string, string> = {};
+  let currentCounter = 1;
+  for (const key of sectionKeys) {
+    if (vis[key]) {
+      indices[key] = String(currentCounter).padStart(2, '0');
+      currentCounter++;
+    }
+  }
+
   return (
     <div id="top">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
-      <Navbar name={c.profile.name} resumeUrl={c.resumeUrl} />
+      <Navbar name={c.profile.name} resumeUrl={c.resumeUrl} visibility={vis} />
       <main id="main-content">
         <Hero hero={c.hero} profile={c.profile} socials={c.socials} resumeUrl={c.resumeUrl} />
-        <About about={c.about} techStack={c.techStack} />
-        <Projects header={c.projectsHeader} projects={projects ?? []} />
-        <Services services={c.services} />
-        <Experience experience={c.experience} />
-        <Education education={c.education} />
-        <Writing posts={latest?.items ?? []} profile={c.profile} />
-        <Contact contact={c.contact} socials={c.socials} resumeUrl={c.resumeUrl} />
+        {vis.about && <About about={c.about} techStack={c.techStack} index={indices.about} />}
+        {vis.projects && <Projects header={c.projectsHeader} projects={projects ?? []} index={indices.projects} />}
+        {vis.services && <Services services={c.services} index={indices.services} />}
+        {vis.experience && <Experience experience={c.experience} index={indices.experience} />}
+        {vis.education && <Education education={c.education} index={indices.education} />}
+        {vis.writing && <Writing posts={latest?.items ?? []} profile={c.profile} index={indices.writing} />}
+        {vis.contact && <Contact contact={c.contact} socials={c.socials} resumeUrl={c.resumeUrl} index={indices.contact} />}
       </main>
       <Footer text={c.footerText} socials={c.socials} />
       <ContactModal recipientEmail={c.contact.email} />

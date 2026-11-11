@@ -16,6 +16,7 @@ export const CONTENT_KEYS = [
   'resumeUrl',
   'footer',
   'seo',
+  'sectionVisibility',
 ] as const;
 
 export type ContentKey = (typeof CONTENT_KEYS)[number];

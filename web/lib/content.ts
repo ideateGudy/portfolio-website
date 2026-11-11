@@ -49,6 +49,26 @@ export type ContactContent = {
   title: string; subtitle: string; heading: string; sectionSubtitle: string;
   blockHeading: string; blockText: string; email: string; availability: string;
 };
+export type SectionVisibility = {
+  about: boolean;
+  projects: boolean;
+  services: boolean;
+  experience: boolean;
+  education: boolean;
+  writing: boolean;
+  contact: boolean;
+};
+
+export const fallbackSectionVisibility: SectionVisibility = {
+  about: true,
+  projects: true,
+  services: true,
+  experience: true,
+  education: true,
+  writing: true,
+  contact: true,
+};
+
 export type ProfileContent = { name: string; role: string; avatarUrl: string; bio: string };
 export type SocialsContent = { github: string; x: string; linkedin: string; devto: string };
 
@@ -266,6 +286,7 @@ export function parseContent(all: Record<string, unknown> | null) {
     contact: obj(c.contact, fallbackContact),
     profile: obj(c.profile, fallbackProfile),
     socials: obj(c.socials, fallbackSocials),
+    sectionVisibility: obj<SectionVisibility>(c.sectionVisibility, fallbackSectionVisibility),
     techStack: Array.isArray(c.techStack) ? (c.techStack as string[]) : fallbackHero.techChips,
     resumeUrl: typeof c.resumeUrl === 'string' ? c.resumeUrl : '',
     footerText: footerRaw.text || 'Goodnews Azonubi · Backend & DevOps Engineer · Fullstack Developer',

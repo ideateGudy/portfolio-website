@@ -5,11 +5,19 @@ import { CheckIcon } from '@/components/ui/icons';
 import { renderFormattedInline, FormattedParagraph } from '@/lib/textFormatter';
 import type { AboutContent } from '@/lib/content';
 
-export function About({ about, techStack }: { about: AboutContent; techStack: string[] }) {
+export function About({
+  about,
+  techStack,
+  index = '01',
+}: {
+  about: AboutContent;
+  techStack: string[];
+  index?: string;
+}) {
   return (
     <section id="about" data-cursor="about" aria-label="About" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="01" label={about.title} title={about.subtitle} />
+        <SectionHeader index={index} label={about.title} title={about.subtitle} />
       </Reveal>
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <Reveal delay={0.05}>

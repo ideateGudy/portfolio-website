@@ -7,15 +7,15 @@ import { cld, formatDate } from '@/lib/format';
 import type { PostListItem } from '@/lib/api';
 import type { ProfileContent } from '@/lib/content';
 
-type Props = { posts: PostListItem[]; profile: ProfileContent };
+type Props = { posts: PostListItem[]; profile: ProfileContent; index?: string };
 
 /** Writing preview: latest 3 posts + link to /blog (PRD §5.1). */
-export function Writing({ posts, profile }: Props) {
+export function Writing({ posts, profile, index = '06' }: Props) {
   const avatar = cld(profile.avatarUrl, 48);
   return (
     <section id="writing" data-cursor="writing" aria-label="Writing" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <Reveal>
-        <SectionHeader index="06" label="Writing" title="Technical articles" subtitle="Notes on backend, DevOps, cloud and fullstack engineering." />
+        <SectionHeader index={index} label="Writing" title="Technical articles" subtitle="Notes on backend, DevOps, cloud and fullstack engineering." />
       </Reveal>
       {posts.length === 0 ? (
         <p className="mt-8 text-muted">Articles are on the way — check back soon.</p>
