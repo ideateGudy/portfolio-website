@@ -4,6 +4,9 @@ import path from 'node:path';
 import { getContent } from '@/lib/api';
 import { parseContent } from '@/lib/content';
 
+// Cache OG image for 24 hours to avoid expensive per-request ImageResponse rendering.
+export const revalidate = 86400;
+
 export const alt = 'Goodnews Azonubi — Portfolio & Technical Profile';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';

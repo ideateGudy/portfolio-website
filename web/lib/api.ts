@@ -33,7 +33,7 @@ export type PostListItem = {
 async function get<T>(path: string, tags?: string[]): Promise<T | null> {
   try {
     const res = await fetch(`${API_URL}${path}`, {
-      next: { revalidate: 60, tags },
+      next: { revalidate: 3600, tags }, // 1 hr - reduced from 60 s to cut Vercel GB-Hrs
     });
     if (!res.ok) return null;
     return (await res.json()) as T;

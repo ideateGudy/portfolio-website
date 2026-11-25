@@ -5,6 +5,9 @@ import { NextResponse } from 'next/server';
 const API_URL = process.env.API_URL ?? 'http://localhost:4000';
 const ALLOWED_TAGS = new Set(['posts', 'projects', 'content']);
 
+// Hard cap: Vercel free tier times out at 10 s anyway; be explicit.
+export const maxDuration = 10;
+
 /**
  * On-demand cache refresh after dashboard mutations (PRD §3). Protected by
  * verifying the admin session against the API (forwards the httpOnly cookie),

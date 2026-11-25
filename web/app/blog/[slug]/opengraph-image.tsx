@@ -4,6 +4,10 @@ import path from 'node:path';
 import { getContent, getPost } from '@/lib/api';
 import { parseContent } from '@/lib/content';
 
+// Cache per-post OG image for 24 hours — regenerates daily or when on-demand
+// revalidation fires (e.g. after editing a post in the dashboard).
+export const revalidate = 86400;
+
 export const alt = 'Article — Goodnews Azonubi';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';

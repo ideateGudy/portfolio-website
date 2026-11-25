@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+
+  // ─── Vercel GB-Hrs optimisations ────────────────────────────────────────────
+  // Minify server-side bundles: smaller functions → faster cold start → fewer GB-Hrs.
+  experimental: {
+    serverMinification: true,
+  },
   images: {
     remotePatterns: [
       {
