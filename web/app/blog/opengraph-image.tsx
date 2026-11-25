@@ -4,9 +4,6 @@ import path from 'node:path';
 import { getContent } from '@/lib/api';
 import { parseContent } from '@/lib/content';
 
-// Cache OG image for 24 hours to avoid expensive per-request ImageResponse rendering.
-export const revalidate = 86400;
-
 export const alt = 'Technical Articles — Goodnews Azonubi';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
@@ -118,6 +115,11 @@ export default async function OpengraphImage() {
         </div>
       </div>
     ),
-    { ...size },
+    {
+      ...size,
+      headers: {
+        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=86400',
+      },
+    },
   );
 }

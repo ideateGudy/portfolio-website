@@ -1,9 +1,5 @@
 import type { MetadataRoute } from 'next';
 
-// Cache sitemap for 24 hours — regenerated daily or on on-demand revalidation.
-// Without this Vercel treats it as a fully dynamic ƒ route and runs it on every request.
-export const revalidate = 86400;
-
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 const API_URL = process.env.API_URL ?? 'http://localhost:4000';
 
